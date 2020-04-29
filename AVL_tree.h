@@ -14,6 +14,14 @@ typedef enum {
     INVALID_INPUT = -3
 } StatusType;
 
+typedef enum {
+    RR=0,
+    RL=1,
+    LL=2,
+    LR=3,
+    No_Roll_Needed=4
+}Roll2_Perform;
+
 template <class Element>
 class AVL_tree_node{
 private:
@@ -26,7 +34,11 @@ private:
 
 public:
 
+
+
     int calcBalnceFactor();
+
+    void updateHeight ();
 
     Element getElement() const {
         return element;
@@ -109,6 +121,8 @@ int AVL_tree_node<Element>::calcBalnceFactor() {
     return left_height-right_height;
 }
 
+
+
 template <class Element>
 class AVL_tree{
 public:
@@ -125,10 +139,13 @@ public:
 
     AVL_tree_node<Element> *getRoot() const;
 
-    void updateHeights(AVL_tree_node<Element>* start_node);
+    void updateTree(AVL_tree_node<Element>* start_node);
 
+    Roll2_Perform checkTypeOfRoll(AVL_tree_node<Element>* p);
 
+    void Perform_RR_Roll(AVL_tree_node<Element>* p);
 
+    void PerformRoll(AVL_tree_node<Element>* p,Roll2_Perform roll_needed);
 private:
     AVL_tree_node<Element>* root;
     AVL_tree_node<Element>* maximum;
@@ -179,6 +196,7 @@ AVL_tree_node<Element>* AVL_tree<Element>::find_node(int key) {
 
 
 
+
 template<class Element>
 StatusType AVL_tree<Element>::insert(AVL_tree_node<Element>& node_toadd) {
     int key=node_toadd.getKey();
@@ -209,8 +227,64 @@ StatusType AVL_tree<Element>::insert(AVL_tree_node<Element>& node_toadd) {
     }
     node_toadd.setParent(last);
     ///update height
-    updateHeights(&node_toadd);
+    updateTree(&node_toadd);
     return SUCCESS;
+}
+template<class Element>
+Roll2_Perform AVL_tree<Element>::checkTypeOfRoll(AVL_tree_node<Element> *p) {
+    if (p->calcBalnceFactor()==-2) {
+        if (p->getRightSon()->calcBalnceFactor() == 1) {
+            return RL;
+        }
+        return RR;
+    }
+    if (p->calcBalnceFactor()==2) {
+        if (p->getLeftSon()->calcBalnceFactor() == -1) {
+            return LR;
+        }
+        return LL;
+    }
+    return No_Roll_Needed;
+}
+
+template<class Element>
+void AVL_tree<Element>::Perform_RR_Roll(AVL_tree_node<Element> *p) {
+    bool updateRoot= false;
+    if (p->getParent()==NULL){
+        updateRoot=true;
+    }
+
+    AVL_tree_node<Element>* OriginalParentOfP=p->getParent(); ///can be NULL
+
+    AVL_tree_node<Element>* leftSonOfRightSonOfP=p->getRightSon()->getLeftSon();
+    AVL_tree_node<Element>* RightSonOfP=p->getRightSon();
+    RightSonOfP->setLeftSon(p);
+    p->setParent(RightSonOfP);
+    RightSonOfP->setParent(OriginalParentOfP);
+    p->setRightSon(leftSonOfRightSonOfP);
+    if (leftSonOfRightSonOfP!=NULL) {
+        leftSonOfRightSonOfP->setParent(p);
+    }
+    if (OriginalParentOfP!=NULL){
+        OriginalParentOfP->setRightSon(RightSonOfP);
+    }
+    ///update the new height
+    RightSonOfP->getRightSon()->updateHeight();
+    RightSonOfP->getLeftSon()->updateHeight();
+    RightSonOfP->updateHeight();
+
+    if(updateRoot){
+    this->setRoot(RightSonOfP);
+    }
+    return;
+}
+
+template<class Element>
+void AVL_tree<Element>::PerformRoll(AVL_tree_node<Element> *p, Roll2_Perform roll_needed) {
+    if(roll_needed==RR){
+        Perform_RR_Roll(p);
+    }
+    return;
 }
 
 /**
@@ -220,26 +294,63 @@ StatusType AVL_tree<Element>::insert(AVL_tree_node<Element>& node_toadd) {
  * @param start_node
  */
 template<class Element>
-void AVL_tree<Element>::updateHeights(AVL_tree_node<Element>* start_node) {
-    AVL_tree_node<Element>* cur= start_node->getParent();
-    int left_height;
-    int right_height;
-    while (cur!=NULL){
-        if (cur->getLeftSon()==NULL){
-            left_height=-1;
-        } else{
-            left_height=cur->getLeftSon()->getHeight();
+void AVL_tree<Element>::updateTree(AVL_tree_node<Element>* start_node) {
+    AVL_tree_node<Element>* p= nullptr;
+    AVL_tree_node<Element>* v= start_node;
+    while (v!=this->getRoot()) {
+        p=v->getParent();
+        if(p->getHeight()>=1+v->getHeight()){
+            return;
         }
-        if (cur->getRightSon()==NULL){
-            right_height=-1;
-        } else{
-            right_height=cur->getRightSon()->getHeight();
+        p->setHeight(1+v->getHeight());
+        Roll2_Perform roll_needed = checkTypeOfRoll(p);
+        if(roll_needed==No_Roll_Needed){
+            v=p;
         }
-        cur->setHeight(std::max(right_height,left_height)+1);
-        cur=cur->getParent();
+        else{
+            PerformRoll(p,roll_needed);
+            return;
+        }
+    }
     }
 
+
+template<class Element>
+void AVL_tree_node<Element>::updateHeight() {
+    int left_height,right_height;
+    AVL_tree_node* p= this;
+    if (p->getLeftSon()==NULL){
+            left_height=-1;
+        } else{
+            left_height=p->getLeftSon()->getHeight();
+        }
+        if (p->getRightSon()==NULL){
+            right_height=-1;
+        } else{
+            right_height=p->getRightSon()->getHeight();
+        }
+        p->setHeight(std::max(right_height,left_height)+1);
 }
+
+
+
+
+
+//        if (p->getLeftSon()==NULL){
+//            left_height=-1;
+//        } else{
+//            left_height=p->getLeftSon()->getHeight();
+//        }
+//        if (p->getRightSon()==NULL){
+//            right_height=-1;
+//        } else{
+//            right_height=p->getRightSon()->getHeight();
+//        }
+//        p->setHeight(std::max(right_height,left_height)+1);
+//        p=p->getParent();
+//    }
+
+
 
 
 #endif //UNTITLED_AVL_TREE_H
