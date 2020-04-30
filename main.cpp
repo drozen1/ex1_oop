@@ -25,9 +25,9 @@ int main() {
    check.insert(node_temp10);
     check.insert(node_temp5);
     check.insert(node_temp6);
-    check.insert(node_temp8);
+   // check.insert(node_temp8);
 
-    check.insert(node_temp7);
+    //check.insert(node_temp7);
     check.insert(node_temp12);
     check.insert(node_temp2N);
     check.insert(node_temp9);

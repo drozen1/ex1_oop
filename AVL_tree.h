@@ -1,8 +1,6 @@
 //
 // Created by Dor on 28/04/2020.
 //
-#include <algorithm>
-#include <iostream>
 #include "AVL_tree_node.h"
 
 #ifndef UNTITLED_AVL_TREE_H
