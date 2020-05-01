@@ -181,7 +181,7 @@ template<class Element>
      */
     template<class Element>
     TypeOfSon AVL_tree_node<Element>::getTypeOfSon(AVL_tree_node<Element> *Son) {
-        if(this->getLeftSon()->getKey()==Son->getKey())
+        if(this->getLeftSon()!=NULL && this->getLeftSon()->getKey()==Son->getKey())
           return LEFT;
         return RIGHT;
     }
