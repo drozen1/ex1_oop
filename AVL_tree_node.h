@@ -5,9 +5,13 @@
 #ifndef EX1_DATASTRUCK_AVL_TREE_NODE_H
 #define EX1_DATASTRUCK_AVL_TREE_NODE_H
 
+
+#include <ostream>
+
+
 namespace AVL {
 
-    template<class Element>
+template<class Element>
     class AVL_tree_node {
     private:
         Element element;
@@ -68,6 +72,7 @@ namespace AVL {
         }
 
         virtual ~AVL_tree_node() {
+            delete(&element);
         }
 
 
@@ -82,9 +87,18 @@ namespace AVL {
             return (getRightSon() == NULL && getLeftSon() == NULL);
         }
 
+        int numOfchildren();
+
+
+
         bool operator==(const AVL_tree_node &rhs) const {
             return key == rhs.key;
         }
+
+//        friend std::ostream &operator<<(std::ostream &os, const AVL_tree_node &node);
+
+        void Print_node();
+
 
     };
 
@@ -126,6 +140,49 @@ namespace AVL {
         }
         p->setHeight(std::max(right_height, left_height) + 1);
     }
+
+    template<class Element>
+    void AVL_tree_node<Element>::Print_node() {
+        std::cout << "Our node is key: " << key<<" height: " << height<<" ";
+        if(parent!=NULL){
+            std::cout<<"The parent is "<< "key:" << parent->getKey()<<" height:" << parent->getHeight();
+        }
+        std::cout<<std::endl;
+        return;
+    }
+
+    template<class Element>
+    int AVL_tree_node<Element>::numOfchildren() {
+        if (this->getRightSon()!=NULL&& this->getLeftSon()!=NULL){
+            return 2;
+        }
+        if(this->getRightSon()==NULL&& this->getLeftSon()==NULL){
+            return 0;
+        }
+        return 1;
+    }
+
+//    template<class Element>
+//    TypeOfSon AVL_tree_node<Element>::getTypeOfSon() {
+//        if(this->getRightSon()!=NULL) {
+//            return RIGHT_SON;
+//        }
+//        if(this->getLeftSon()!=NULL) {
+//            return LEFT_SON;
+//        }
+//        return LEFT_SON;
+//    }
+
+
+
+
+
+
+//    template<class Element>
+//    std::ostream& AVL_tree_node<Element>:: operator<<(std::ostream &os, const AVL_tree_node <Element> &node) {
+//        os << "height: " << node.getHeight() << " key: " << node.getKey();
+//        return os;
+//    }
 
 
 }

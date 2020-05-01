@@ -19,20 +19,23 @@ int main() {
 
     AVL::AVL_tree<int> check;
     check.find_node(2);
-    check.insert(node_temp12);
-    check.insert(node_temp11);
-    check.insert(node_temp4);
-   check.insert(node_temp10);
     check.insert(node_temp5);
-    check.insert(node_temp6);
-   // check.insert(node_temp8);
-
-    //check.insert(node_temp7);
-    check.insert(node_temp12);
+    check.insert(node_temp3);
+    check.insert(node_temp7);
+    check.insert(node_temp4);
     check.insert(node_temp2N);
+
     check.insert(node_temp9);
+    check.insert(node_temp8);
+    check.insert(node_temp8);
     check.insert(node_temp11);
     check.insert(node_temp4);
+    check.insert(node_temp12);
+    check.insert(node_temp10);
+    check.insert(node_temp2N);
+    check.insert(node_temp3);
+   // check.inOrder(check.getRoot());
+    check.inOrder(check.getRoot());
 
 
 //    AVL_tree_node<int>* node_temp3=check.find_node(8);

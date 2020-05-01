@@ -1,10 +1,15 @@
 //
 // Created by Dor on 28/04/2020.
 //
-#include "AVL_tree_node.h"
 
 #ifndef UNTITLED_AVL_TREE_H
 #define UNTITLED_AVL_TREE_H
+
+
+
+#include "AVL_tree_node.h"
+#include <ostream>
+
 
 namespace AVL {
 
@@ -25,6 +30,11 @@ namespace AVL {
         No_Roll_Needed = 4
     } Roll2_Perform;
 
+    typedef enum {
+        LEFT = 0,
+        RIGHT = 1,
+
+    } TypeOfSon;
 
     template<class Element>
     class AVL_tree {
@@ -37,7 +47,7 @@ namespace AVL {
 
         AVL_tree() : root(nullptr), maximum(nullptr) {}
 
-        AVL_tree_node<Element> *find_node(int key);
+        AVL_tree_node<Element>* find_node(int key);
 
         StatusType insert(AVL_tree_node<Element> &node_toadd);
 
@@ -56,6 +66,10 @@ namespace AVL {
         void Perform_RL_Roll(AVL_tree_node<Element> *p);
 
         void PerformRoll(AVL_tree_node<Element> *p, Roll2_Perform roll_needed);
+
+        void inOrder(AVL_tree_node<Element> *p);
+
+        AVL_tree_node<Element>* searchTreeRemoval(AVL_tree_node<Element> &node_toremove);
 
     private:
         AVL_tree_node<Element> *root;
@@ -79,6 +93,7 @@ namespace AVL {
     void AVL_tree<Element>::setMaximum(AVL_tree_node<Element> *maximum) {
         AVL_tree::maximum = maximum;
     }
+
 
 
 /**
@@ -334,6 +349,44 @@ namespace AVL {
             }
         }
     }
+
+    template<class Element>
+    void AVL_tree<Element>::inOrder(AVL_tree_node<Element> *p) {
+
+        if (p==NULL){
+            return;
+        }
+        inOrder(p->getLeftSon());
+        p->Print_node();
+        inOrder(p->getRightSon());
+    }
+
+    /**
+     *
+     * @tparam Element
+     * @param node_toremove
+     * @return Null if the node was not found or if he is the only node
+     */
+    template<class Element>
+    AVL_tree_node<Element> *AVL_tree<Element>::searchTreeRemoval(AVL_tree_node<Element> &node_toremove) {
+        AVL_tree_node<Element>* p=find_node(node_toremove.getKey());
+        if (p==NULL){
+            return NULL;
+        }
+        AVL_tree_node<Element>* parentOfp= p->getParent();
+        if (p->isLeaf()){
+            if(parentOfp==NULL){
+             delete(p);
+             return NULL;
+            }
+            if(parentOfp->getLeftSon()->getKey()==p->getKey()){
+                parentOfp->setLeftSon(NULL);
+            }
+            return p->getParent();
+        }
+
+    }
+
 
 }
 
