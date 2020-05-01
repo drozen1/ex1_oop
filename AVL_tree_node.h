@@ -7,10 +7,12 @@
 
 
 #include <ostream>
+#include "AVL_types.h"
 
 
 namespace AVL {
 
+    using namespace AVLUtils;
 template<class Element>
     class AVL_tree_node {
     private:
@@ -89,6 +91,8 @@ template<class Element>
 
         int numOfchildren();
 
+        TypeOfSon getTypeOfSon(AVL_tree_node<Element>* Son);
+
 
 
         bool operator==(const AVL_tree_node &rhs) const {
@@ -160,6 +164,13 @@ template<class Element>
             return 0;
         }
         return 1;
+    }
+
+    template<class Element>
+    TypeOfSon AVL_tree_node<Element>::getTypeOfSon(AVL_tree_node<Element> *Son) {
+        if(this->getLeftSon()->getKey()==Son->getKey())
+          return LEFT;
+        return RIGHT;
     }
 
 //    template<class Element>

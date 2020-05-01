@@ -13,28 +13,28 @@
 
 namespace AVL {
 
+    using namespace AVLUtils;
 
 //copy from library
-    typedef enum {
-        SUCCESS = 0,
-        FAILURE = -1,
-        ALLOCATION_ERROR = -2,
-        INVALID_INPUT = -3
-    } StatusType;
-
-    typedef enum {
-        RR = 0,
-        RL = 1,
-        LL = 2,
-        LR = 3,
-        No_Roll_Needed = 4
-    } Roll2_Perform;
-
-    typedef enum {
-        LEFT = 0,
-        RIGHT = 1,
-
-    } TypeOfSon;
+//    typedef enum {
+//        SUCCESS = 0,
+//        FAILURE = -1,
+//        ALLOCATION_ERROR = -2,
+//        INVALID_INPUT = -3
+//    } StatusType;
+//
+//    typedef enum {
+//        RR = 0,
+//        RL = 1,
+//        LL = 2,
+//        LR = 3,
+//        No_Roll_Needed = 4
+//    } Roll2_Perform;
+//
+//    typedef enum {
+//        LEFT = 0,
+//        RIGHT = 1,
+//    } TypeOfSon;
 
     template<class Element>
     class AVL_tree {
@@ -69,7 +69,7 @@ namespace AVL {
 
         void inOrder(AVL_tree_node<Element> *p);
 
-        AVL_tree_node<Element>* searchTreeRemoval(AVL_tree_node<Element> &node_toremove);
+        AVL_tree_node<Element>* searchTreeRemoval(AVL_tree_node<Element> &node_to_remove);
 
     private:
         AVL_tree_node<Element> *root;
@@ -368,20 +368,25 @@ namespace AVL {
      * @return Null if the node was not found or if he is the only node
      */
     template<class Element>
-    AVL_tree_node<Element> *AVL_tree<Element>::searchTreeRemoval(AVL_tree_node<Element> &node_toremove) {
-        AVL_tree_node<Element>* p=find_node(node_toremove.getKey());
+    AVL_tree_node<Element> *AVL_tree<Element>::searchTreeRemoval(AVL_tree_node<Element> &node_to_remove) {
+        AVL_tree_node<Element>* p=find_node(node_to_remove.getKey());
         if (p==NULL){
             return NULL;
         }
         AVL_tree_node<Element>* parentOfp= p->getParent();
         if (p->isLeaf()){
+            ///the only node
             if(parentOfp==NULL){
-             delete(p);
-             return NULL;
+                delete(p);
+                return NULL;
             }
             if(parentOfp->getLeftSon()->getKey()==p->getKey()){
                 parentOfp->setLeftSon(NULL);
             }
+            if(parentOfp->getRightSon()->getKey()==p->getKey()){
+                parentOfp->setRightSon(NULL);
+            }
+            delete(p);
             return p->getParent();
         }
 
