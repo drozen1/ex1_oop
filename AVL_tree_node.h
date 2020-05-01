@@ -24,10 +24,10 @@ template<class Element>
         int key;
 
     public:
-        AVL_tree_node * retreiveFollowingVertexInorder(){
-            AVL_tree_node temp = this->getRightSon();
-            while(temp.getLeftSon()!= NULL){
-                temp = temp.getLeftSon();
+        AVL_tree_node* retreiveFollowingVertexInorder(){
+            AVL_tree_node* temp =  this->getRightSon();
+            while(temp->getLeftSon()!= NULL){
+                temp = temp->getLeftSon();
             }
             return temp;
         }

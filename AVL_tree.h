@@ -61,7 +61,6 @@ namespace AVL {
         AVL_tree_node<Element> *maximum;
         //AVL_tree_node<Element>* min;
 
-
     };
 
     template<class Element>
@@ -362,16 +361,19 @@ namespace AVL {
 
         if (parentOfp == NULL) { // The vertex to be removed is the root of the tree
             handleRootRemoval(p);
+            return NULL;
         }
                                 // we can be sure that the vertex isn't the root of the tree
         if (p->isLeaf()){
             handleLeafRemoval(p);
+            return NULL;
         }
         if (p->numOfchildren() == 1){
             handleRemovalOfVerWithOneKid(p);
+            return NULL;
         }
         handleRemovalOfVerWithTwoKids(p);
-
+    return NULL; // temporary and should be changed
     }
 
 
@@ -380,6 +382,7 @@ void AVL_tree<Element>::handleRootRemoval(AVL_tree_node<Element> *p){
         if (p->numOfchildren() == 0) { // The vertex to be removed is the only vertex in the tree
             delete(p);
             this->root= NULL;
+            return;
         }
         if(p->numOfchildren() == 1) {
             if (p->getLeftSon() != NULL){
@@ -389,6 +392,7 @@ void AVL_tree<Element>::handleRootRemoval(AVL_tree_node<Element> *p){
                 setRoot(p->getRightSon());
             }
             delete(p);
+            return;
         }
         else {  // the vertex has two children
             AVL_tree_node<Element>* followingVerInorder = p->retreiveFollowingVertexInorder();
@@ -400,7 +404,7 @@ void AVL_tree<Element>::handleRootRemoval(AVL_tree_node<Element> *p){
                     parentOfFollowingVer->setLeftSon(NULL);
                 }
             }
-            if(followingVerInorder->numOfchildren==1){
+            if(followingVerInorder->numOfchildren() == 1){
                 parentOfFollowingVer->setLeftSon (followingVerInorder->getRightSon());
             }
                 followingVerInorder->setLeftSon( p->getLeftSon());
@@ -411,7 +415,7 @@ void AVL_tree<Element>::handleRootRemoval(AVL_tree_node<Element> *p){
                 this->root = followingVerInorder;
                 delete (p);
         }
-
+    return;
     }
 
 template<class Element>
@@ -424,7 +428,7 @@ void AVL_tree<Element>::handleLeafRemoval(AVL_tree_node<Element> *p){
         parentOfp->setLeftSon(NULL);
     }
     delete(p);
-    return parentOfp;
+    return;
 }
 
     template<class Element>
@@ -441,13 +445,14 @@ void AVL_tree<Element>::handleLeafRemoval(AVL_tree_node<Element> *p){
 
         else{ //p is the right son of his parent
             if(p->getLeftSon()!=NULL){
-                parentOfp->setRightSon(p->getLefttSon());
+                parentOfp->setRightSon(p->getLeftSon());
             }
             else{
                 parentOfp->setRightSon(p->getRightSon());
             }
         }
          delete(p);
+        return;
     }
 
     template<class Element>
@@ -462,8 +467,9 @@ void AVL_tree<Element>::handleLeafRemoval(AVL_tree_node<Element> *p){
                 parentOfFollowingVer->setLeftSon(NULL);
             }
         }
-        if(followingVerInorder->numOfchildren==1){
-            parentOfFollowingVer->setLeftSon (followingVerInorder->getRightSon());
+        if(followingVerInorder->numOfchildren() == 1){
+            parentOfFollowingVer->setLeftSon( followingVerInorder->getRightSon());
+//            parentOfFollowingVer->setLeftSon (followingVerInorder->getRightSon());
         }
         followingVerInorder->setLeftSon( p->getLeftSon());
         followingVerInorder->setRightSon(p->getRightSon());
@@ -471,10 +477,10 @@ void AVL_tree<Element>::handleLeafRemoval(AVL_tree_node<Element> *p){
         p->getRightSon()->setParent(followingVerInorder);
         followingVerInorder->setParent(parentOfp);
         delete (p);
+        return;
     }
 
     }
-}
 
 
 #endif //UNTITLED_AVL_TREE_H
