@@ -22,6 +22,10 @@ namespace AVL {
     public:
         void setRoot(AVL_tree_node<Element> *root);
 
+        void handleRootRemoval(AVL_tree_node<Element> *p);
+        void handleLeafRemoval(AVL_tree_node<Element> *p);
+        void handleRemovalOfVerWithOneKid(AVL_tree_node<Element> *p);
+        void handleRemovalOfVerWithTwoKids(AVL_tree_node<Element> *p);
         void setMaximum(AVL_tree_node<Element> *maximum);
 
         AVL_tree(AVL_tree_node<Element> *root) : root(root) {}
@@ -355,36 +359,122 @@ namespace AVL {
             return NULL;
         }
         AVL_tree_node<Element>* parentOfp= p->getParent();
-//        TypeOfSon typeofsonP=parentOfp->getTypeOfSon(p);
-//         (==RIGHT){
 
-        
-
-        ///treat leaf
+        if (parentOfp == NULL) { // The vertex to be removed is the root of the tree
+            handleRootRemoval(p);
+        }
+                                // we can be sure that the vertex isn't the root of the tree
         if (p->isLeaf()){
-            ///the only node
-            if(parentOfp==NULL){
-                delete(p);
-                return NULL;
-            }
-            if (parentOfp->getTypeOfSon(p)==RIGHT){
-                parentOfp->setRightSon(NULL);
-            }
-            if (parentOfp->getTypeOfSon(p)==LEFT){
-                parentOfp->setLeftSon(NULL);
-            }
-            delete(p);
-            return parentOfp;
+            handleLeafRemoval(p);
         }
-        if(p->numOfchildren()==1){
-            if(p->getLeftSon()==NULL){
-
-            }
+        if (p->numOfchildren() == 1){
+            handleRemovalOfVerWithOneKid(p);
         }
+        handleRemovalOfVerWithTwoKids(p);
 
     }
 
 
+template<class Element>
+void AVL_tree<Element>::handleRootRemoval(AVL_tree_node<Element> *p){
+        if (p->numOfchildren() == 0) { // The vertex to be removed is the only vertex in the tree
+            delete(p);
+            this->root= NULL;
+        }
+        if(p->numOfchildren() == 1) {
+            if (p->getLeftSon() != NULL){
+                setRoot(p->getLeftSon());
+            }
+            else {
+                setRoot(p->getRightSon());
+            }
+            delete(p);
+        }
+        else {  // the vertex has two children
+            AVL_tree_node<Element>* followingVerInorder = p->retreiveFollowingVertexInorder();
+            AVL_tree_node<Element>* parentOfFollowingVer = followingVerInorder->getParent();
+            if (followingVerInorder->isLeaf()) { //handle the case the following vertex is a leaf
+                if (parentOfFollowingVer->getTypeOfSon(followingVerInorder) == RIGHT) {
+                    parentOfFollowingVer->setRightSon(NULL);
+                } else {
+                    parentOfFollowingVer->setLeftSon(NULL);
+                }
+            }
+            if(followingVerInorder->numOfchildren==1){
+                parentOfFollowingVer->setLeftSon (followingVerInorder->getRightSon());
+            }
+                followingVerInorder->setLeftSon( p->getLeftSon());
+                followingVerInorder->setRightSon(p->getRightSon());
+                p->getLeftSon()->setParent(followingVerInorder);
+                p->getRightSon()->setParent(followingVerInorder);
+                followingVerInorder->setParent(NULL);
+                this->root = followingVerInorder;
+                delete (p);
+        }
+
+    }
+
+template<class Element>
+void AVL_tree<Element>::handleLeafRemoval(AVL_tree_node<Element> *p){
+    AVL_tree_node<Element>* parentOfp= p->getParent(); //isn't null for sure because the root case is being taken care of earlier
+    if (parentOfp->getTypeOfSon(p)==RIGHT){
+        parentOfp->setRightSon(NULL);
+    }
+    if (parentOfp->getTypeOfSon(p)==LEFT){
+        parentOfp->setLeftSon(NULL);
+    }
+    delete(p);
+    return parentOfp;
 }
+
+    template<class Element>
+    void AVL_tree<Element>::handleRemovalOfVerWithOneKid(AVL_tree_node<Element> *p){
+        AVL_tree_node<Element>* parentOfp= p->getParent(); //surely isn't null because the root case is being taken care of earlier
+        if(parentOfp->getTypeOfSon(p)==LEFT){
+            if(p->getLeftSon()!=NULL){
+                parentOfp->setLeftSon(p->getLeftSon());
+            }
+            else{
+                parentOfp->setLeftSon(p->getRightSon());
+            }
+        }
+
+        else{ //p is the right son of his parent
+            if(p->getLeftSon()!=NULL){
+                parentOfp->setRightSon(p->getLefttSon());
+            }
+            else{
+                parentOfp->setRightSon(p->getRightSon());
+            }
+        }
+         delete(p);
+    }
+
+    template<class Element>
+    void AVL_tree<Element>::handleRemovalOfVerWithTwoKids(AVL_tree_node<Element> *p){
+        AVL_tree_node<Element>* parentOfp= p->getParent(); //surely isn't null because the root case is being taken care of earlier
+        AVL_tree_node<Element>* followingVerInorder = p->retreiveFollowingVertexInorder();
+        AVL_tree_node<Element>* parentOfFollowingVer = followingVerInorder->getParent();
+        if (followingVerInorder->isLeaf()) { //handle the case the following vertex is a leaf
+            if (parentOfFollowingVer->getTypeOfSon(followingVerInorder) == RIGHT) {
+                parentOfFollowingVer->setRightSon(NULL);
+            } else {
+                parentOfFollowingVer->setLeftSon(NULL);
+            }
+        }
+        if(followingVerInorder->numOfchildren==1){
+            parentOfFollowingVer->setLeftSon (followingVerInorder->getRightSon());
+        }
+        followingVerInorder->setLeftSon( p->getLeftSon());
+        followingVerInorder->setRightSon(p->getRightSon());
+        p->getLeftSon()->setParent(followingVerInorder);
+        p->getRightSon()->setParent(followingVerInorder);
+        followingVerInorder->setParent(parentOfp);
+        delete (p);
+    }
+
+    }
+}
+
 
 #endif //UNTITLED_AVL_TREE_H
