@@ -15,26 +15,7 @@ namespace AVL {
 
     using namespace AVLUtils;
 
-//copy from library
-//    typedef enum {
-//        SUCCESS = 0,
-//        FAILURE = -1,
-//        ALLOCATION_ERROR = -2,
-//        INVALID_INPUT = -3
-//    } StatusType;
-//
-//    typedef enum {
-//        RR = 0,
-//        RL = 1,
-//        LL = 2,
-//        LR = 3,
-//        No_Roll_Needed = 4
-//    } Roll2_Perform;
-//
-//    typedef enum {
-//        LEFT = 0,
-//        RIGHT = 1,
-//    } TypeOfSon;
+
 
     template<class Element>
     class AVL_tree {
@@ -374,20 +355,31 @@ namespace AVL {
             return NULL;
         }
         AVL_tree_node<Element>* parentOfp= p->getParent();
+//        TypeOfSon typeofsonP=parentOfp->getTypeOfSon(p);
+//         (==RIGHT){
+
+        
+
+        ///treat leaf
         if (p->isLeaf()){
             ///the only node
             if(parentOfp==NULL){
                 delete(p);
                 return NULL;
             }
-            if(parentOfp->getLeftSon()->getKey()==p->getKey()){
-                parentOfp->setLeftSon(NULL);
-            }
-            if(parentOfp->getRightSon()->getKey()==p->getKey()){
+            if (parentOfp->getTypeOfSon(p)==RIGHT){
                 parentOfp->setRightSon(NULL);
             }
+            if (parentOfp->getTypeOfSon(p)==LEFT){
+                parentOfp->setLeftSon(NULL);
+            }
             delete(p);
-            return p->getParent();
+            return parentOfp;
+        }
+        if(p->numOfchildren()==1){
+            if(p->getLeftSon()==NULL){
+
+            }
         }
 
     }

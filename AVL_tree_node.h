@@ -166,6 +166,12 @@ template<class Element>
         return 1;
     }
 
+    /**
+     * the function works on the parent
+     * @tparam Element
+     * @param Son-the son we want to check, what type of son it is of the given parent
+     * @return
+     */
     template<class Element>
     TypeOfSon AVL_tree_node<Element>::getTypeOfSon(AVL_tree_node<Element> *Son) {
         if(this->getLeftSon()->getKey()==Son->getKey())

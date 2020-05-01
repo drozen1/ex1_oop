@@ -7,6 +7,7 @@
 
 namespace AVLUtils{
 
+    //copy from library
     typedef enum {
         SUCCESS = 0,
         FAILURE = -1,
