@@ -38,14 +38,17 @@ int main() {
     check.insert(node_temp11);
     check.insert(node_temp8);
     check.insert(node_temp11);
-    check.insert(node_temp17);
+     check.insert(node_temp17);
     check.insert(node_temp13);
     check.insert(node_temp12);
     check.insert(node_temp15);
     check.insert(node_temp5);
    // check.inOrder(check.getRoot());
     //check.inOrder(check.getRoot());
-   check.searchTreeRemoval(node_temp16);
+     check.searchTreeRemoval(node_temp6);
+     check.searchTreeRemoval(node_temp7);
+//   check.searchTreeRemoval(node_temp13);
+
 //    check.searchTreeRemoval(node_temp5);
 //    check.searchTreeRemoval(node_temp2N );
 
@@ -63,7 +66,7 @@ int main() {
 
 //    AVL_tree_node<int>* curr = &node_temp;
 //    if(curr!=NULL && (curr->getLeftSon() != NULL or curr->getRightSon() != nullptr)){
-        std::cout << "Hello, World!" << std::endl;
+        std::cout << "the root is: " << check.getRoot()->getKey() << std::endl;
 //    }
 
     return 0;
