@@ -4,45 +4,6 @@
 
 int main() {
 
-    AVL::Doubly_Linked_List<int> list;
-    AVL::Link_Node<int> node1= AVL::Link_Node<int>(1);
-    AVL::Link_Node<int> node2= AVL::Link_Node<int>(2);
-    AVL::Link_Node<int> node3= AVL::Link_Node<int>(3);
-    AVL::Link_Node<int> node4= AVL::Link_Node<int>(4);
-    AVL::Link_Node<int> node5= AVL::Link_Node<int>(5);
-    AVL::Link_Node<int> node6= AVL::Link_Node<int>(6);
-    AVL::Link_Node<int> node7= AVL::Link_Node<int>(7);
-    AVL::Link_Node<int> node8= AVL::Link_Node<int>(8);
-
-    list.setNewNodeAfterNode(NULL,&node1);
-    list.setNewNodeAfterNode(&node1,&node2);
-    list.setNewNodeAfterNode(&node2,&node3);
-    list.setNewNodeAfterNode(&node2,&node4);
-    list.setNewNodeAfterNode(NULL,&node5);
-    list.setNewNodeAfterNode(&node3,&node6);
-
-
-
-    AVL::Link_Node<int>* ptr=list.getHead();
-    int i=1;
-    while(ptr!=NULL){
-        std::cout<<"Node number "<<i<< " is: "<<ptr->getNum()<<std::endl;
-        ptr=ptr->getNext();
-        i++;
-    }
-    std::cout<<"The Head is: "<<list.getHead()->getNum()<<std::endl;
-    std::cout<<"The Last is: "<<list.getLast()->getNum()<<std::endl;
-
-
-
-
-
-
-
-
-
-
-
 AVL::AVL_tree_node<int> node_temp5 =   AVL::AVL_tree_node<int>(2,5);
 AVL::AVL_tree_node<int> node_temp2 =   AVL::AVL_tree_node<int>(2,2);
 AVL::AVL_tree_node<int> node_temp8 =   AVL::AVL_tree_node<int>(2,8);
@@ -57,19 +18,13 @@ AVL::AVL_tree_node<int> node_temp12 =   AVL::AVL_tree_node<int>(2,12);
 AVL::AVL_tree_node<int> node_temp11 =   AVL::AVL_tree_node<int>(2,11);
 
 
-AVL::AVL_tree<int> check;;
-check.insert(node_temp5);
-check.insert(node_temp2);
-check.insert(node_temp8);
-check.insert(node_temp1);
-check.insert(node_temp4);
-check.insert(node_temp6);
-check.insert(node_temp10);
-check.insert(node_temp3);
-check.insert(node_temp7);
-check.insert(node_temp9);
-check.insert(node_temp12);
-check.insert(node_temp11);
+//AVL::AVL_tree<int> check;
+AVL::AVL_tree<int> tree2(4);
+tree2.inOrder(tree2.getRoot());
+//check.insert(node_temp7);
+//check.insert(node_temp9);
+//check.insert(node_temp12);
+//check.insert(node_temp11);
 
 
 //check.remove(node_temp1);

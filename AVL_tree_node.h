@@ -79,6 +79,9 @@ template<class Element>
         AVL_tree_node(Element e, int key) : element(e), parent(nullptr), right_son(nullptr), left_son(nullptr),
                                             height(0), key(key) {
         }
+        AVL_tree_node(int key);
+
+
 
         virtual ~AVL_tree_node() {
             delete(&element);
@@ -184,6 +187,9 @@ template<class Element>
           return LEFT;
         return RIGHT;
     }
+
+    template<class Element>
+    AVL_tree_node<Element>::AVL_tree_node(int key):parent(nullptr), right_son(nullptr), left_son(nullptr),key(key) {}
 
 //    template<class Element>
 //    TypeOfSon AVL_tree_node<Element>::getTypeOfSon() {

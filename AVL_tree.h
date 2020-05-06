@@ -9,7 +9,7 @@
 
 #include "AVL_tree_node.h"
 #include <ostream>
-
+#include <math.h>
 
 namespace AVL {
 
@@ -19,6 +19,11 @@ namespace AVL {
     template<class Element>
     class AVL_tree {
     public:
+
+        AVL_tree(int num_of_nodes);
+
+        AVL_tree_node<Element>* CompleteTree(int h);
+
         void setRoot(AVL_tree_node<Element> *root);
 
         AVL_tree_node<Element>* handleLeafRemoval(AVL_tree_node<Element> *p);
@@ -27,13 +32,13 @@ namespace AVL {
 
         AVL_tree_node<Element>* handleRemovalOfVerWithTwoKids(AVL_tree_node<Element> *p);
 
-        void setMaximum(AVL_tree_node<Element> *maximum);
+        void setMinimum(AVL_tree_node<Element> *minimum);
 
         void updateHeights( AVL_tree_node<Element>* v);
 
         AVL_tree(AVL_tree_node<Element> *root) : root(root) {}
 
-        AVL_tree() : root(nullptr), maximum(nullptr) {}
+        AVL_tree() : root(nullptr), minimum(nullptr) {}
 
         AVL_tree_node<Element> *find_node(int key);
 
@@ -62,8 +67,7 @@ namespace AVL {
 
     private:
         AVL_tree_node<Element> *root;
-        AVL_tree_node<Element> *maximum;
-        //AVL_tree_node<Element>* min;
+        AVL_tree_node<Element>* minimum;
 
     };
 
@@ -78,8 +82,8 @@ namespace AVL {
     }
 
     template<class Element>
-    void AVL_tree<Element>::setMaximum(AVL_tree_node<Element> *maximum) {
-        AVL_tree::maximum = maximum;
+    void AVL_tree<Element>::setMinimum(AVL_tree_node<Element> *minimum) {
+        AVL_tree::minimum = minimum;
     }
 
 
@@ -112,6 +116,15 @@ namespace AVL {
     template<class Element>
     StatusType AVL_tree<Element>::insert(AVL_tree_node<Element> &node_toadd) {
         int key = node_toadd.getKey();
+        if (this->root == NULL){
+           setMinimum(&node_toadd);
+        }
+        else{
+            if (key < minimum->getKey()){
+                setMinimum(&node_toadd);
+            }
+        }
+
         if (find_node(key) != nullptr)
             return FAILURE;
         AVL_tree_node<Element> *curr = root;
@@ -143,6 +156,9 @@ namespace AVL {
 
     template<class Element>
     StatusType AVL_tree<Element>::remove(AVL_tree_node<Element> &node_to_remove) {
+        if(node_to_remove.getKey()== minimum->getKey()){
+            minimum = node_to_remove.getParent();
+        }
         int nodeWasFound = 0;
         AVL_tree_node<Element>* parentOfVBeforeRoll = NULL;
         AVL_tree_node<Element>* nodeToStartFrom = searchTreeRemoval(node_to_remove,nodeWasFound);
@@ -153,7 +169,6 @@ namespace AVL {
         while (v != NULL) {
             parentOfVBeforeRoll = v->getParent();
             v->updateHeight();
-            int previousHeightOfV = v->getHeight();
             Roll2_Perform roll_needed = checkTypeOfRoll(v);
             PerformRoll(v, roll_needed);
                 v= parentOfVBeforeRoll;
@@ -561,6 +576,39 @@ template<class Element>
         return nodeToReturn;
     }
 
+
+
+    template<class Element>
+    AVL_tree<Element>::AVL_tree(int num_of_nodes):root(NULL),minimum(NULL) {
+        int h=log2(num_of_nodes)+1;
+        if (num_of_nodes!=0) {
+            this->setRoot(CompleteTree(h));
+        } else{
+            this->setRoot(NULL);
+        }
+
+    }
+
+    template<class Element>
+    AVL_tree_node<Element> *AVL_tree<Element>::CompleteTree(int h) {
+        if( h==0){
+            return nullptr;
+        }
+        AVL_tree_node<Element>* temp_root_node = new AVL_tree_node<Element>(-1);
+
+        AVL_tree_node<Element>* leftson=CompleteTree(h-1);
+        temp_root_node->setLeftSon(leftson);
+        if (leftson!=NULL) {
+            leftson->setParent(temp_root_node);
+        }
+        AVL_tree_node<Element>* rightson=CompleteTree(h-1);
+        temp_root_node->setRightSon(rightson);
+        if (rightson!=NULL) {
+            rightson->setParent(temp_root_node);
+        }
+        temp_root_node->setHeight(h-1);
+        return  temp_root_node;
+    }
 }
 
 
