@@ -156,12 +156,7 @@ namespace AVL {
             int previousHeightOfV = v->getHeight();
             Roll2_Perform roll_needed = checkTypeOfRoll(v);
             PerformRoll(v, roll_needed);
-//            if(previousHeightOfV == v->getHeight()){
-//                return SUCCESS; //temporary return value
-//            }
-//            else{
                 v= parentOfVBeforeRoll;
-//            }
                 }
         return SUCCESS; //temporary return value
         }
