@@ -155,22 +155,8 @@ template<class Element>
     template<class Element>
     void AVL_tree_node<Element>::Print_node() {
         std::cout << "Our node is key: " << key<< " ";
-        if(parent!=NULL){
-            std::cout<<"The parent is "<< "key:" << parent->getKey()<< " ";
-        }
-        if (this->getRightSon()!=NULL){
-            std::cout << "The right son is" << " key:" << this->getRightSon()->getKey() << " ";
-        }
-        else {
-            std::cout << "The right son is NULL ";
-        }
-        if(this->getLeftSon()!=NULL){
-            std::cout << "The left son is" << " key:" << this->getLeftSon()->getKey() << " ";
-
-        }
-        else {
-            std::cout << "The left son is NULL ";
-        }
+        std::cout << "BF: " << calcBalnceFactor() << " ";
+        std::cout << "Height: " << getHeight();
         std::cout<<std::endl;
         return;
     }

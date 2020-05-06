@@ -29,6 +29,8 @@ namespace AVL {
 
         void setMaximum(AVL_tree_node<Element> *maximum);
 
+        void updateHeights( AVL_tree_node<Element>* v);
+
         AVL_tree(AVL_tree_node<Element> *root) : root(root) {}
 
         AVL_tree() : root(nullptr), maximum(nullptr) {}
@@ -154,12 +156,12 @@ namespace AVL {
             int previousHeightOfV = v->getHeight();
             Roll2_Perform roll_needed = checkTypeOfRoll(v);
             PerformRoll(v, roll_needed);
-            if(previousHeightOfV == v->getHeight()){
-                return SUCCESS; //temporary return value
-            }
-            else{
+//            if(previousHeightOfV == v->getHeight()){
+//                return SUCCESS; //temporary return value
+//            }
+//            else{
                 v= parentOfVBeforeRoll;
-            }
+//            }
                 }
         return SUCCESS; //temporary return value
         }
@@ -199,7 +201,12 @@ namespace AVL {
                 leftSonOfRightSonOfP->setParent(p);
             }
             if (OriginalParentOfP != NULL) {
-                OriginalParentOfP->setRightSon(RightSonOfP);
+                if(OriginalParentOfP->getTypeOfSon(p) == RIGHT){
+                    OriginalParentOfP->setRightSon(RightSonOfP);
+                }
+                else{
+                    OriginalParentOfP->setLeftSon(RightSonOfP);
+                }
             }
             ///update the new height
             RightSonOfP->getRightSon()->updateHeight();
@@ -219,10 +226,10 @@ namespace AVL {
                 updateRoot = true;
             }
 
-            AVL_tree_node <Element> *OriginalParentOfP = p->getParent(); ///can be NULL
+            AVL_tree_node<Element> *OriginalParentOfP = p->getParent(); ///can be NULL
 
-            AVL_tree_node <Element> *RightSonOfLeftSonOfP = p->getLeftSon()->getRightSon();
-            AVL_tree_node <Element> *LeftSonOfP = p->getLeftSon();
+            AVL_tree_node<Element> *RightSonOfLeftSonOfP = p->getLeftSon()->getRightSon();
+            AVL_tree_node<Element> *LeftSonOfP = p->getLeftSon();
             LeftSonOfP->setRightSon(p);
             p->setParent(LeftSonOfP);
             LeftSonOfP->setParent(OriginalParentOfP);
@@ -231,18 +238,22 @@ namespace AVL {
                 RightSonOfLeftSonOfP->setParent(p);
             }
             if (OriginalParentOfP != NULL) {
-                OriginalParentOfP->setLeftSon(LeftSonOfP);
+                if (OriginalParentOfP->getTypeOfSon(p) == RIGHT) {
+                    OriginalParentOfP->setRightSon(LeftSonOfP);
+                } else {
+                    OriginalParentOfP->setLeftSon(LeftSonOfP);
+                }
             }
-            ///update the new height
-            LeftSonOfP->getRightSon()->updateHeight();
-            LeftSonOfP->getLeftSon()->updateHeight();
-            LeftSonOfP->updateHeight();
+                ///update the new height
+                LeftSonOfP->getRightSon()->updateHeight();
+                LeftSonOfP->getLeftSon()->updateHeight();
+                LeftSonOfP->updateHeight();
 
-            if (updateRoot) {
-                this->setRoot(LeftSonOfP);
+                if (updateRoot) {
+                    this->setRoot(LeftSonOfP);
+                }
+                return;
             }
-            return;
-        }
 
         template<class Element>
         void AVL_tree<Element>::Perform_LR_Roll(AVL_tree_node<Element> *p) {
@@ -268,9 +279,11 @@ namespace AVL {
             LeftSonOfP->setParent(RightSonOfLeftSonOfP);
             RightSonOfLeftSonOfP->setParent(OriginalParent);
             if (OriginalParent != NULL) {
+                if(OriginalParent->getTypeOfSon(p)==LEFT){
+                    OriginalParent->setLeftSon(RightSonOfLeftSonOfP);
+                }
                 OriginalParent->setRightSon(RightSonOfLeftSonOfP);
             }
-
             ///update the new height
             p->updateHeight();
             LeftSonOfP->updateHeight();
@@ -307,8 +320,10 @@ namespace AVL {
             RightSonOfP->setParent(LeftSonOfRightSonOfP);
             LeftSonOfRightSonOfP->setParent(OriginalParent);
             if (OriginalParent != NULL) {
-                OriginalParent->setLeftSon(LeftSonOfRightSonOfP);
-               // OriginalParent->setRightSon(LeftSonOfRightSonOfP);  THIS WAS THE ORIGINAL ONE!
+                if(OriginalParent->getTypeOfSon(p)==LEFT){
+                    OriginalParent->setLeftSon(LeftSonOfRightSonOfP);
+                }
+                OriginalParent->setRightSon(LeftSonOfRightSonOfP);
             }
             ///update the new height
             p->updateHeight();
@@ -370,6 +385,14 @@ namespace AVL {
             }
         }
 
+    template<class Element>
+    void AVL_tree<Element>::updateHeights(AVL::AVL_tree_node<Element> *v) {
+        while(v!=NULL){
+            v->updateHeight();
+            v=v->getParent();
+        }
+    }
+
         template<class Element>
         void AVL_tree<Element>::inOrder(AVL_tree_node<Element> *p) {
 
@@ -405,11 +428,11 @@ namespace AVL {
                 return nodeToReturnToAVLRemoval;
             }
             nodeToReturnToAVLRemoval = handleRemovalOfVerWithTwoKids(p);
-            return nodeToReturnToAVLRemoval;; // temporary and should be changed
+            return nodeToReturnToAVLRemoval;;
         }
 
 template<class Element>
-AVL_tree_node<Element>* AVL_tree<Element>::handleRemovalOfVerWithTwoKids(AVL_tree_node<Element> *p) { //Should be tested more!
+AVL_tree_node<Element>* AVL_tree<Element>::handleRemovalOfVerWithTwoKids(AVL_tree_node<Element> *p) { //need to update heights
 AVL_tree_node <Element> *parentOfp = p->getParent();
 bool shouldResetRoot = false;
 if (parentOfp == NULL) {
@@ -432,6 +455,7 @@ if (parentOfp == NULL) {
             }
         }
         delete (p);
+        updateHeights(followingVerInorder);
         return followingVerInorder;
     }
     AVL_tree_node <Element> *parentOfFollowingVer = followingVerInorder->getParent();
@@ -470,6 +494,7 @@ if (parentOfp == NULL) {
         }
     }
     delete (p);
+    updateHeights(parentOfFollowingVer); //this should reach to an update of the followingVerInorder too
     return followingVerInorder;
 }
 
@@ -493,52 +518,55 @@ AVL_tree_node<Element>* AVL_tree<Element>::handleLeafRemoval(AVL_tree_node<Eleme
         parentOfp->setLeftSon(NULL);
     }
     delete (p);
+    updateHeights(parentOfp);
     return parentOfp;
 }
 
-        template<class Element>
-        AVL_tree_node<Element>* AVL_tree<Element>::handleRemovalOfVerWithOneKid(AVL_tree_node<Element> *p) {
-            AVL_tree_node<Element>* nodeToReturn = NULL;
-            bool shouldResetRoot = false;
-            if (p->getParent() == NULL) {
-                shouldResetRoot = true;
-            }
-            if (shouldResetRoot) { // Handle the root removal case
-                if (p->getLeftSon() != NULL) {
-                    setRoot(p->getLeftSon());
-                    p->getLeftSon()->setParent(NULL);
-                } else {
-                    setRoot(p->getRightSon()); // the son of p is surely it's right one
-                    p->getRightSon()->setParent(NULL);
-                }
-                delete (p);
-                return root;
-            }
-            AVL_tree_node <Element> *parentOfp = p->getParent();
-            if (parentOfp->getTypeOfSon(p) == LEFT) {
-                if (p->getLeftSon() != NULL) {
-                    nodeToReturn = p->getLeftSon();
-                    parentOfp->setLeftSon(p->getLeftSon());
-                    p->getLeftSon()->setParent(parentOfp);
-                } else {
-                    nodeToReturn = p->getRightSon();
-                    parentOfp->setLeftSon(p->getRightSon());
-                    p->getRightSon()->setParent(parentOfp);
-                }
-            } else { //p is the right son of his parent
-                if (p->getLeftSon() != NULL) {
-                    parentOfp->setRightSon(p->getLeftSon());
-                    p->getLeftSon()->setParent(parentOfp);
-                } else {
-                    parentOfp->setRightSon(p->getRightSon());
-                    p->getRightSon()->setParent(parentOfp);
-                }
+template<class Element>
+    AVL_tree_node<Element>* AVL_tree<Element>::handleRemovalOfVerWithOneKid(AVL_tree_node<Element> *p) {
+        AVL_tree_node<Element>* nodeToReturn = NULL;
+        bool shouldResetRoot = false;
+        if (p->getParent() == NULL) {
+            shouldResetRoot = true;
+        }
+        if (shouldResetRoot) { // Handle the root removal case
+            if (p->getLeftSon() != NULL) {
+                setRoot(p->getLeftSon());
+                p->getLeftSon()->setParent(NULL);
+            } else {
+                setRoot(p->getRightSon()); // the son of p is surely it's right one
+                p->getRightSon()->setParent(NULL);
             }
             delete (p);
-            return nodeToReturn;
+            updateHeights(root);
+            return root;
         }
-
+        AVL_tree_node <Element> *parentOfp = p->getParent();
+        if (parentOfp->getTypeOfSon(p) == LEFT) {
+            if (p->getLeftSon() != NULL) {
+                nodeToReturn = p->getLeftSon();
+                parentOfp->setLeftSon(p->getLeftSon());
+                p->getLeftSon()->setParent(parentOfp);
+            } else {
+                nodeToReturn = p->getRightSon();
+                parentOfp->setLeftSon(p->getRightSon());
+                p->getRightSon()->setParent(parentOfp);
+            }
+        } else { //p is the right son of his parent
+            if (p->getLeftSon() != NULL) {
+                parentOfp->setRightSon(p->getLeftSon());
+                p->getLeftSon()->setParent(parentOfp);
+            } else {
+                parentOfp->setRightSon(p->getRightSon());
+                p->getRightSon()->setParent(parentOfp);
+            }
+        }
+        delete (p);
+        updateHeights(parentOfp);
+        return nodeToReturn;
     }
+
+}
 
 
 #endif //UNTITLED_AVL_TREE_H
