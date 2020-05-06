@@ -585,8 +585,11 @@ template<class Element>
             this->setRoot(CompleteTree(h));
         } else{
             this->setRoot(NULL);
+            return;
         }
-
+        int num_of_full_nodes=pow(2,h)-1;
+        int nodes_to_delete=(num_of_full_nodes-num_of_nodes);
+        this->getRoot()->delete_redudants_nodes(&nodes_to_delete);
     }
 
     template<class Element>

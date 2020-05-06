@@ -7,7 +7,6 @@
 
 #include "Link_node.h"
 
-
 namespace AVL {
 
     using namespace AVLUtils;

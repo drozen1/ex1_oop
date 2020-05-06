@@ -1,25 +1,14 @@
 #include <iostream>
 #include "AVL_tree.h"
 #include "Doubly_linked_list.h"
+#include "MusicManager.h"
 
 int main() {
 
-AVL::AVL_tree_node<int> node_temp5 =   AVL::AVL_tree_node<int>(2,5);
-AVL::AVL_tree_node<int> node_temp2 =   AVL::AVL_tree_node<int>(2,2);
-AVL::AVL_tree_node<int> node_temp8 =   AVL::AVL_tree_node<int>(2,8);
-AVL::AVL_tree_node<int> node_temp1 =   AVL::AVL_tree_node<int>(2,1);
-AVL::AVL_tree_node<int> node_temp4 =   AVL::AVL_tree_node<int>(2,4);
-AVL::AVL_tree_node<int> node_temp6 =   AVL::AVL_tree_node<int>(2,6);
-AVL::AVL_tree_node<int> node_temp10 =   AVL::AVL_tree_node<int>(2,10);
-AVL::AVL_tree_node<int> node_temp3 =   AVL::AVL_tree_node<int>(2,3);
-AVL::AVL_tree_node<int> node_temp7 =   AVL::AVL_tree_node<int>(2,7);
-AVL::AVL_tree_node<int> node_temp9 =   AVL::AVL_tree_node<int>(2,9);
-AVL::AVL_tree_node<int> node_temp12 =   AVL::AVL_tree_node<int>(2,12);
-AVL::AVL_tree_node<int> node_temp11 =   AVL::AVL_tree_node<int>(2,11);
 
 
 //AVL::AVL_tree<int> check;
-AVL::AVL_tree<int> tree2(4);
+AVL::AVL_tree<int> tree2(2);
 tree2.inOrder(tree2.getRoot());
 //check.insert(node_temp7);
 //check.insert(node_temp9);

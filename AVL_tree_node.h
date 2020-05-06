@@ -16,7 +16,7 @@ namespace AVL {
 template<class Element>
     class AVL_tree_node {
     private:
-        Element element;
+        Element* element;
         AVL_tree_node *parent;
         AVL_tree_node *right_son;
         AVL_tree_node *left_son;
@@ -36,13 +36,7 @@ template<class Element>
 
         void updateHeight();
 
-        Element getElement() const {
-            return element;
-        }
-
-        void setElement(Element element) {
-            AVL_tree_node::element = element;
-        }
+        Element *getElement() const;
 
         AVL_tree_node *getParent() const {
             return parent;
@@ -59,6 +53,7 @@ template<class Element>
         void setRightSon(AVL_tree_node *rightSon) {
             right_son = rightSon;
         }
+        void delete_redudants_nodes (int* num_of_nodes_to_delete);
 
         AVL_tree_node *getLeftSon() const {
             return left_son;
@@ -76,9 +71,16 @@ template<class Element>
             AVL_tree_node::height = height;
         }
 
-        AVL_tree_node(Element e, int key) : element(e), parent(nullptr), right_son(nullptr), left_son(nullptr),
-                                            height(0), key(key) {
+        AVL_tree_node(Element* e, int receivedKey) {
+            element = e;
+            parent= (nullptr);
+            right_son = (nullptr);
+            left_son = (nullptr);
+            height =(0);
+            key = (receivedKey);
+
         }
+
         AVL_tree_node(int key);
 
 
@@ -113,8 +115,10 @@ template<class Element>
 
         void Print_node();
 
+    void setElement(Element *element);
 
-    };
+
+};
 
 /**
  * clc BF = left_height-right_height
@@ -190,6 +194,38 @@ template<class Element>
 
     template<class Element>
     AVL_tree_node<Element>::AVL_tree_node(int key):parent(nullptr), right_son(nullptr), left_son(nullptr),key(key) {}
+
+    template<class Element>
+    Element *AVL_tree_node<Element>::getElement() const {
+        return element;
+    }
+
+    template<class Element>
+    void AVL_tree_node<Element>::setElement(Element *element) {
+        AVL_tree_node::element = element;
+    }
+
+    template<class Element>
+    void AVL_tree_node<Element>::delete_redudants_nodes(int* num_of_nodes_to_delete) {
+        if(*num_of_nodes_to_delete==0|| this==NULL){
+            return;
+        }
+        this->getRightSon()->delete_redudants_nodes(num_of_nodes_to_delete);
+        ///delete if it is leaf
+        if (isLeaf()){
+            *num_of_nodes_to_delete=*num_of_nodes_to_delete-1;
+            if(this->getParent()->getRightSon()!=NULL){
+                this->getParent()->setRightSon(NULL);
+                delete this;
+            }
+            else{
+                this->getParent()->setLeftSon(NULL);
+                delete this;
+            }
+        }
+
+        this->getLeftSon()->delete_redudants_nodes(num_of_nodes_to_delete);
+    }
 
 //    template<class Element>
 //    TypeOfSon AVL_tree_node<Element>::getTypeOfSon() {

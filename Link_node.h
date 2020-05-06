@@ -16,7 +16,8 @@ namespace AVL {
     public:
         Link_Node(int num) : num(num),next(NULL),prev(NULL) {}
 
-        Link_Node(int num, T element) : num(num), element(element),next(NULL),prev(NULL) {}
+        Link_Node(int num, T *element) :
+        num(num), element(element),next(NULL),prev(NULL) {}
 
         int getNum() const {
             return num;
@@ -38,7 +39,7 @@ namespace AVL {
             Link_Node::prev = prev;
         }
 
-        T getElement() const {
+        T* getElement() const {
             return element;
         }
 
@@ -61,7 +62,7 @@ namespace AVL {
 
     private:
         int num;
-        T element;
+        T* element;
         Link_Node<T>* next;
         Link_Node<T>* prev;
 
