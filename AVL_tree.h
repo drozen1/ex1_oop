@@ -20,6 +20,8 @@ namespace AVL {
     class AVL_tree {
     public:
 
+
+
         AVL_tree(int num_of_nodes);
 
         AVL_tree_node<Element>* CompleteTree(int h);
@@ -612,6 +614,10 @@ template<class Element>
         temp_root_node->setHeight(h-1);
         return  temp_root_node;
     }
+
+
+
+
 }
 
 

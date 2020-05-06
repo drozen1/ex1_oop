@@ -8,6 +8,7 @@
 
 
 #include "AVL_tree.h"
+#include "Doubly_linked_list.h"
 
 int main(){
     AVL::AVL_tree<int> tree;;
