@@ -65,11 +65,18 @@ namespace AVL {
         void PerformRoll(AVL_tree_node<Element> *p, Roll2_Perform roll_needed);
 
         void inOrder(AVL_tree_node<Element> *p);
+
+        void print_from_min(AVL_tree_node<Element> *cur,AVL_tree_node<Element> *last);
+
+        void print_from_min(AVL_tree_node<Element> *cur);
+
         AVL_tree_node<Element>* searchTreeRemoval(AVL_tree_node<Element> &node_to_remove, int& foundGivenNode);
 
     private:
         AVL_tree_node<Element> *root;
         AVL_tree_node<Element>* minimum;
+    public:
+        AVL_tree_node<Element> *getMinimum() const;
 
     };
 
@@ -294,7 +301,9 @@ namespace AVL {
                 if(OriginalParent->getTypeOfSon(p)==LEFT){
                     OriginalParent->setLeftSon(RightSonOfLeftSonOfP);
                 }
-                OriginalParent->setRightSon(RightSonOfLeftSonOfP);
+                else {
+                    OriginalParent->setRightSon(RightSonOfLeftSonOfP);
+                }
             }
             ///update the new height
             p->updateHeight();
@@ -335,7 +344,9 @@ namespace AVL {
                 if(OriginalParent->getTypeOfSon(p)==LEFT){
                     OriginalParent->setLeftSon(LeftSonOfRightSonOfP);
                 }
-                OriginalParent->setRightSon(LeftSonOfRightSonOfP);
+                else {
+                    OriginalParent->setRightSon(LeftSonOfRightSonOfP);
+                }
             }
             ///update the new height
             p->updateHeight();
@@ -426,6 +437,122 @@ namespace AVL {
             p->Print_node();
             inOrder(p->getRightSon());
         }
+
+
+//    template<class Element>
+//    void AVL_tree<Element>::print_from_min(AVL_tree_node<Element> *cur) {
+//        if (cur!=NULL) {
+//            cur->Print_node();
+//            if(cur->getParent()!=NULL){
+//            print_from_min(cur, cur->getParent());
+//            }
+//            else{
+//                if(cur->getRightSon()!=NULL){
+//                    cur->getRightSon()->Print_node();
+//                }
+//            }
+//        }
+//    }
+
+        /**
+         *
+         *
+         * @tparam Element
+         * @param cur - send me the minmum
+         * @param last - send me NULL
+         */
+        template<class Element>
+        void AVL_tree<Element>::print_from_min(AVL_tree_node<Element> *cur,AVL_tree_node<Element> *last) {
+
+            if(cur==NULL){
+                if(last->getRightSon()==NULL &&last->getParent()!=NULL){
+                    print_from_min(last->getParent(),last);
+                }
+                return;
+            }else{
+                ///travel left
+                if(cur->getLeftSon()!=NULL && last!=NULL && cur->getParent()!=NULL
+                        && cur->getParent()->getKey()==last->getKey()) {
+                    print_from_min(cur->getLeftSon(), cur);
+                    return;
+                }
+
+            }
+
+
+            ///finish to travel left
+             if(((cur->getLeftSon()==NULL && last==NULL) ||(last!=NULL&&
+             cur->getLeftSon()!=NULL&& cur->getLeftSon()->getKey()==last->getKey()))){
+                 cur->Print_node();
+                 last = cur;
+                 cur = cur->getRightSon();
+                 print_from_min(cur, last);
+                 return;
+                 }
+
+             else {
+
+                 if (cur->isLeaf()){
+                     cur->Print_node();
+                     last=cur;
+                     cur = cur->getParent();
+                     print_from_min(cur,last);
+                     return;
+                 }
+             }
+             if(cur->getLeftSon()==NULL&&cur->getRightSon()!=NULL&&
+                    last!=NULL&&cur->getParent()!=NULL&&
+                    cur->getParent()->getKey()==last->getKey()){
+                 cur->Print_node();
+             }
+
+
+             ///travel right
+            if(cur->getRightSon()!=NULL && last!=NULL && cur->getRightSon()->getKey()!=last->getKey()) {
+                print_from_min(cur->getRightSon(), cur);
+                return;
+            }
+
+            ///finish to travel right
+            if( (cur->getRightSon()==NULL&&last==NULL)||
+                (cur->getRightSon()!=NULL&& cur->getRightSon()->getKey()==last->getKey())){
+                last=cur;
+                cur=cur->getParent();
+                print_from_min(cur,last);
+            }
+            return;
+            }
+
+
+
+//            last=cur->getParent();
+//            if (cur!=NULL&&last==NULL) {
+//                cur->Print_node();
+//                return;
+//            }
+//            while (last!=NULL){
+//                    while (cur->getLeftSon()!=NULL){
+//                        last=cur;
+//                        cur=cur->getLeftSon();
+//                        }
+//                    if(cur->getLeftSon()!=NULL&& cur->getLeftSon()->getKey()==last->getKey()){
+//                        cur->Print_node();
+//                        last = cur;
+//                        cur = cur->getRightSon();
+//                    }
+//                    else {
+//                        if (last->getTypeOfSon(cur) == RIGHT) {
+//                            cur = last;
+//                            last = last->getParent();
+//                        }
+//                    }
+//                    cur->Print_node();
+//                    cur=cur->getParent();
+//                    last=cur;
+//                }
+//            }
+//            return;
+//        }
 
         /**
          *
@@ -626,6 +753,11 @@ template<class Element>
         }
         temp_root_node->setHeight(h-1);
         return  temp_root_node;
+    }
+
+    template<class Element>
+    AVL_tree_node<Element> *AVL_tree<Element>::getMinimum() const {
+        return minimum;
     }
 
 
