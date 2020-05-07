@@ -20,7 +20,7 @@ namespace AVL {
     class AVL_tree {
     public:
 
-
+        void fill_tree(AVL_tree_node <Element> *ptr, int *n);
 
         AVL_tree(int num_of_nodes);
 
@@ -405,6 +405,17 @@ namespace AVL {
         }
     }
 
+    template<class Element>
+    void AVL_tree<Element>::fill_tree(AVL_tree_node<Element>*ptr ,int* n) {
+        if(*n<0||ptr==NULL){
+            return;
+        }
+        fill_tree(ptr->getRightSon(),n);
+        ptr->setKey(*n);
+        *n=*n-1;
+        fill_tree(ptr->getLeftSon(),n);
+    }
+
         template<class Element>
         void AVL_tree<Element>::inOrder(AVL_tree_node<Element> *p) {
 
@@ -592,6 +603,8 @@ template<class Element>
         int num_of_full_nodes=pow(2,h)-1;
         int nodes_to_delete=(num_of_full_nodes-num_of_nodes);
         this->getRoot()->delete_redudants_nodes(&nodes_to_delete);
+        int x=num_of_nodes-1;
+        this->fill_tree(this->getRoot(),&x);
     }
 
     template<class Element>

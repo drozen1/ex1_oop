@@ -32,6 +32,7 @@ template<class Element>
             return temp;
         }
 
+
         int calcBalnceFactor();
 
         void updateHeight();
@@ -117,6 +118,8 @@ template<class Element>
 
     void setElement(Element *element);
 
+    void setKey(int key);
+
 
 };
 
@@ -199,6 +202,10 @@ template<class Element>
     Element *AVL_tree_node<Element>::getElement() const {
         return element;
     }
+    template<class Element>
+    void AVL_tree_node<Element>::setKey(int key) {
+        AVL_tree_node::key = key;
+    }
 
     template<class Element>
     void AVL_tree_node<Element>::setElement(Element *element) {
@@ -210,7 +217,9 @@ template<class Element>
         if(*num_of_nodes_to_delete==0|| this==NULL){
             return;
         }
-        this->getRightSon()->delete_redudants_nodes(num_of_nodes_to_delete);
+        AVL_tree_node<Element>*right= this->getRightSon();
+        right->delete_redudants_nodes(num_of_nodes_to_delete);
+                //->delete_redudants_nodes(num_of_nodes_to_delete);
         ///delete if it is leaf
         if (isLeaf()){
             *num_of_nodes_to_delete=*num_of_nodes_to_delete-1;
@@ -220,12 +229,18 @@ template<class Element>
             }
             else{
                 this->getParent()->setLeftSon(NULL);
+                this->getParent()->setHeight(this->getParent()->getHeight()-1);
                 delete this;
             }
+            return;
         }
 
         this->getLeftSon()->delete_redudants_nodes(num_of_nodes_to_delete);
     }
+
+
+
+
 
 //    template<class Element>
 //    TypeOfSon AVL_tree_node<Element>::getTypeOfSon() {
