@@ -7,8 +7,8 @@
 
 
 #include <ostream>
+#include <iostream>
 #include "AVL_types.h"
-
 
 namespace AVL {
 
@@ -31,7 +31,6 @@ template<class Element>
             }
             return temp;
         }
-
 
         int calcBalnceFactor();
 
@@ -87,7 +86,9 @@ template<class Element>
 
 
         virtual ~AVL_tree_node() {
-            delete(&element);
+            if(element!= NULL){
+                delete(element);
+            }
         }
 
 

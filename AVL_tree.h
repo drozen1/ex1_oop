@@ -19,6 +19,18 @@ namespace AVL {
     template<class Element>
     class AVL_tree {
     public:
+        ~AVL_tree(){
+            DestroyTree(this->getRoot());
+        }
+
+        void DestroyTree(AVL_tree_node<Element> *p){
+            if (p == NULL ){
+                return;
+            }
+            DestroyTree(p->getLeftSon());
+            DestroyTree(p->getRightSon());
+            delete(p);
+        }
 
         void fill_tree(AVL_tree_node <Element> *ptr, int *n);
 
@@ -732,6 +744,7 @@ template<class Element>
         this->getRoot()->delete_redudants_nodes(&nodes_to_delete);
         int x=num_of_nodes-1;
         this->fill_tree(this->getRoot(),&x);
+        this->setMinimum(this->find_node(0));
     }
 
     template<class Element>

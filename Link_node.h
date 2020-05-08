@@ -51,8 +51,8 @@ namespace AVL {
             return prev;
         }
 
-        virtual ~Link_Node() {
 
+        virtual ~Link_Node() {
         }
 
         friend std::ostream &operator<<(std::ostream &os, const Link_Node &node) {
@@ -67,6 +67,7 @@ namespace AVL {
         Link_Node<T>* prev;
 
     };
+
 
 }
 

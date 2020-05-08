@@ -7,13 +7,13 @@
 
 namespace AVLUtils{
 
-    //copy from library
-    typedef enum {
-        SUCCESS = 0,
-        FAILURE = -1,
-        ALLOCATION_ERROR = -2,
-        INVALID_INPUT = -3
-    } StatusType;
+//copy from library
+typedef enum {
+    SUCCESS = 0,
+    FAILURE = -1,
+    ALLOCATION_ERROR = -2,
+    INVALID_INPUT = -3
+} StatusType;
 
     typedef enum {
         RR = 0,

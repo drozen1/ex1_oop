@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "library1.h"
+#include "MusicManager.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -123,10 +124,10 @@ static commandType CheckCommand(const char* const command,
 static errorType OnInit(void** DS, const char* const command);
 static errorType OnAddArtist(void* DS, const char* const command);
 static errorType OnRemoveArtist(void* DS, const char* const command);
-static errorType OnAddToSongCount(void* DS, const char* const command);
+//static errorType OnAddToSongCount(void* DS, const char* const command);
 static errorType OnNumberOfStreams(void* DS, const char* const command);
-static errorType OnGetRecommendedSongs(void* DS, const char* const command);
-static errorType OnQuit(void** DS, const char* const command);
+//static errorType OnGetRecommendedSongs(void* DS, const char* const command);
+//static errorType OnQuit(void** DS, const char* const command);
 
 /***************************************************************************/
 /* Parser                                                                  */
@@ -151,16 +152,16 @@ static errorType parser(const char* const command) {
             rtn_val = OnRemoveArtist(DS, command_args);
             break;
         case (ADDTOSONGCOUNT_CMD):
-            rtn_val = OnAddToSongCount(DS, command_args);
+//            rtn_val = OnAddToSongCount(DS, command_args);
             break;
         case (NUMBEROFSTREAMS_CMD):
             rtn_val = OnNumberOfStreams(DS, command_args);
             break;
         case (GETRECOMMENDEDSONGS_CMD):
-            rtn_val = OnGetRecommendedSongs(DS, command_args);
+//            rtn_val = OnGetRecommendedSongs(DS, command_args);
             break;
         case (QUIT_CMD):
-            rtn_val = OnQuit(&DS, command_args);
+//            rtn_val = OnQuit(&DS, command_args);
             break;
 
         case (COMMENT_CMD):
@@ -223,19 +224,19 @@ static errorType OnRemoveArtist(void* DS, const char* const command) {
     return error_free;
 }
 
-static errorType OnAddToSongCount(void* DS, const char* const command) {
-    int artistID, songID;
-    ValidateRead(sscanf(command, "%d %d", &artistID, &songID), 2, "%s failed.\n", commandStr[ADDTOSONGCOUNT_CMD]);
-    StatusType res = AddToSongCount(DS, artistID, songID);
-
-    if (res != SUCCESS) {
-        printf("%s: %s\n", commandStr[ADDTOSONGCOUNT_CMD], ReturnValToStr(res));
-        return error_free;
-    }
-
-    printf("%s: %s\n", commandStr[ADDTOSONGCOUNT_CMD], ReturnValToStr(res));
-    return error_free;
-}
+//static errorType OnAddToSongCount(void* DS, const char* const command) {
+//    int artistID, songID;
+//    ValidateRead(sscanf(command, "%d %d", &artistID, &songID), 2, "%s failed.\n", commandStr[ADDTOSONGCOUNT_CMD]);
+//    StatusType res = AddToSongCount(DS, artistID, songID);
+//
+//    if (res != SUCCESS) {
+//        printf("%s: %s\n", commandStr[ADDTOSONGCOUNT_CMD], ReturnValToStr(res));
+//        return error_free;
+//    }
+//
+//    printf("%s: %s\n", commandStr[ADDTOSONGCOUNT_CMD], ReturnValToStr(res));
+//    return error_free;
+//}
 
 static errorType OnNumberOfStreams(void* DS, const char* const command) {
     int artistID, songID, streams;
@@ -250,56 +251,58 @@ static errorType OnNumberOfStreams(void* DS, const char* const command) {
     printf("%s: %d\n", commandStr[NUMBEROFSTREAMS_CMD], streams);
     return error_free;
 }
-
-static errorType OnGetRecommendedSongs(void* DS, const char* const command) {
-    int numOfSongs;
-    int *artists, *songs;
-
-    ValidateRead(sscanf(command, "%d", &numOfSongs), 1, "%s failed.\n", commandStr[GETRECOMMENDEDSONGS_CMD]);
-    artists = (int *)malloc(numOfSongs * sizeof(int));
-    songs = (int *)malloc(numOfSongs * sizeof(int));
-
-    StatusType res;
-    if (artists != NULL && songs != NULL) {
-        res = GetRecommendedSongs(DS, numOfSongs, artists, songs);
-    }
-    else {
-        res = ALLOCATION_ERROR;
-    }
-
-    if (res != SUCCESS) {
-        printf("%s: %s\n", commandStr[GETRECOMMENDEDSONGS_CMD], ReturnValToStr(res));
-        return error_free;
-    }
-
-    printf("%s: %s\n", commandStr[GETRECOMMENDEDSONGS_CMD], ReturnValToStr(res));
-
-    printf("Artist\t|\tSong\n");
-
-    for (int i = 0; i < numOfSongs; i++)
-    {
-        printf("%d\t|\t%d\n", artists[i], songs[i]);
-    }
-
-    printf("--End of recommended songs--\n");
-
-    if (artists != NULL) free(artists);
-    if (songs != NULL) free(songs);
-
-    return error_free;
-}
-
-static errorType OnQuit(void** DS, const char* const command) {
-    Quit(DS);
-    if (*DS != NULL) {
-        printf("quit failed.\n");
-        return error;
-    };
-
-    isInit = false;
-    printf("quit done.\n");
-    return error_free;
-}
+//
+//static errorType OnGetRecommendedSongs(void* DS, const char* const command) {
+//    int numOfSongs;
+//    int *artists, *songs;
+//
+//    ValidateRead(sscanf(command, "%d", &numOfSongs), 1, "%s failed.\n", commandStr[GETRECOMMENDEDSONGS_CMD]);
+//    artists = (int *)malloc(numOfSongs * sizeof(int));
+//    songs = (int *)malloc(numOfSongs * sizeof(int));
+//
+//    StatusType res;
+//    if (artists != NULL && songs != NULL) {
+//        res = GetRecommendedSongs(DS, numOfSongs, artists, songs);
+//    }
+//    else {
+//        res = ALLOCATION_ERROR;
+//    }
+//
+//    if (res != SUCCESS) {
+//        printf("%s: %s\n", commandStr[GETRECOMMENDEDSONGS_CMD], ReturnValToStr(res));
+//        if (artists != NULL) free(artists);
+//        if (songs != NULL) free(songs);
+//        return error_free;
+//    }
+//
+//    printf("%s: %s\n", commandStr[GETRECOMMENDEDSONGS_CMD], ReturnValToStr(res));
+//
+//    printf("Artist\t|\tSong\n");
+//
+//    for (int i = 0; i < numOfSongs; i++)
+//    {
+//        printf("%d\t|\t%d\n", artists[i], songs[i]);
+//    }
+//
+//    printf("--End of recommended songs--\n");
+//
+//    if (artists != NULL) free(artists);
+//    if (songs != NULL) free(songs);
+//
+//    return error_free;
+//}
+//
+//static errorType OnQuit(void** DS, const char* const command) {
+//    Quit(DS);
+//    if (*DS != NULL) {
+//        printf("quit failed.\n");
+//        return error;
+//    };
+//
+//    isInit = false;
+//    printf("quit done.\n");
+//    return error_free;
+//}
 
 #ifdef __cplusplus
 }
