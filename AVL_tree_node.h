@@ -197,7 +197,7 @@ template<class Element>
     }
 
     template<class Element>
-    AVL_tree_node<Element>::AVL_tree_node(int key):parent(nullptr), right_son(nullptr), left_son(nullptr),key(key) {}
+    AVL_tree_node<Element>::AVL_tree_node(int key):element(NULL), parent(nullptr), right_son(nullptr), left_son(nullptr),key(key) {}
 
     template<class Element>
     Element *AVL_tree_node<Element>::getElement() const {

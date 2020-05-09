@@ -50,7 +50,7 @@ namespace AVL {
 
         void updateHeights( AVL_tree_node<Element>* v);
 
-        AVL_tree(AVL_tree_node<Element> *root) : root(root) {}
+        AVL_tree(AVL_tree_node<Element> *root) : root(root),minimum(root) {}
 
         AVL_tree() : root(nullptr), minimum(nullptr) {}
 
@@ -141,7 +141,7 @@ namespace AVL {
            setMinimum(&node_toadd);
         }
         else{
-            if (key < minimum->getKey()){
+            if (minimum!=NULL && key < minimum->getKey()){
                 setMinimum(&node_toadd);
             }
         }
