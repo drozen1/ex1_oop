@@ -124,10 +124,10 @@ static commandType CheckCommand(const char* const command,
 static errorType OnInit(void** DS, const char* const command);
 static errorType OnAddArtist(void* DS, const char* const command);
 static errorType OnRemoveArtist(void* DS, const char* const command);
-//static errorType OnAddToSongCount(void* DS, const char* const command);
+static errorType OnAddToSongCount(void* DS, const char* const command);
 static errorType OnNumberOfStreams(void* DS, const char* const command);
 //static errorType OnGetRecommendedSongs(void* DS, const char* const command);
-//static errorType OnQuit(void** DS, const char* const command);
+static errorType OnQuit(void** DS, const char* const command);
 
 /***************************************************************************/
 /* Parser                                                                  */
@@ -152,7 +152,7 @@ static errorType parser(const char* const command) {
             rtn_val = OnRemoveArtist(DS, command_args);
             break;
         case (ADDTOSONGCOUNT_CMD):
-//            rtn_val = OnAddToSongCount(DS, command_args);
+           rtn_val = OnAddToSongCount(DS, command_args);
             break;
         case (NUMBEROFSTREAMS_CMD):
             rtn_val = OnNumberOfStreams(DS, command_args);
@@ -161,7 +161,7 @@ static errorType parser(const char* const command) {
 //            rtn_val = OnGetRecommendedSongs(DS, command_args);
             break;
         case (QUIT_CMD):
-//            rtn_val = OnQuit(&DS, command_args);
+            rtn_val = OnQuit(&DS, command_args);
             break;
 
         case (COMMENT_CMD):
@@ -224,19 +224,19 @@ static errorType OnRemoveArtist(void* DS, const char* const command) {
     return error_free;
 }
 
-//static errorType OnAddToSongCount(void* DS, const char* const command) {
-//    int artistID, songID;
-//    ValidateRead(sscanf(command, "%d %d", &artistID, &songID), 2, "%s failed.\n", commandStr[ADDTOSONGCOUNT_CMD]);
-//    StatusType res = AddToSongCount(DS, artistID, songID);
-//
-//    if (res != SUCCESS) {
-//        printf("%s: %s\n", commandStr[ADDTOSONGCOUNT_CMD], ReturnValToStr(res));
-//        return error_free;
-//    }
-//
-//    printf("%s: %s\n", commandStr[ADDTOSONGCOUNT_CMD], ReturnValToStr(res));
-//    return error_free;
-//}
+static errorType OnAddToSongCount(void* DS, const char* const command) {
+    int artistID, songID;
+    ValidateRead(sscanf(command, "%d %d", &artistID, &songID), 2, "%s failed.\n", commandStr[ADDTOSONGCOUNT_CMD]);
+    StatusType res = AddToSongCount(DS, artistID, songID);
+
+    if (res != SUCCESS) {
+        printf("%s: %s\n", commandStr[ADDTOSONGCOUNT_CMD], ReturnValToStr(res));
+        return error_free;
+    }
+
+    printf("%s: %s\n", commandStr[ADDTOSONGCOUNT_CMD], ReturnValToStr(res));
+    return error_free;
+}
 
 static errorType OnNumberOfStreams(void* DS, const char* const command) {
     int artistID, songID, streams;
@@ -292,17 +292,17 @@ static errorType OnNumberOfStreams(void* DS, const char* const command) {
 //    return error_free;
 //}
 //
-//static errorType OnQuit(void** DS, const char* const command) {
-//    Quit(DS);
-//    if (*DS != NULL) {
-//        printf("quit failed.\n");
-//        return error;
-//    };
-//
-//    isInit = false;
-//    printf("quit done.\n");
-//    return error_free;
-//}
+static errorType OnQuit(void** DS, const char* const command) {
+    Quit(DS);
+    if (*DS != NULL) {
+        printf("quit failed.\n");
+        return error;
+    };
+
+    isInit = false;
+    printf("quit done.\n");
+    return error_free;
+}
 
 #ifdef __cplusplus
 }

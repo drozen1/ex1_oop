@@ -21,6 +21,9 @@ namespace AVL {
     public:
         ~AVL_tree(){
             DestroyTree(this->getRoot());
+            this->setRoot(NULL);
+            this->setMinimum(NULL);
+
         }
 
         void DestroyTree(AVL_tree_node<Element> *p){
@@ -174,9 +177,11 @@ namespace AVL {
         return SUCCESS;
     }
 
-
     template<class Element>
     StatusType AVL_tree<Element>::remove(AVL_tree_node<Element> &node_to_remove) {
+        if (this->getMinimum() == NULL){
+            return FAILURE;
+        }
         if(node_to_remove.getKey()== minimum->getKey()){
             minimum = node_to_remove.getParent();
         }
@@ -769,7 +774,7 @@ template<class Element>
     }
 
     template<class Element>
-    AVL_tree_node<Element> *AVL_tree<Element>::getMinimum() const {
+    AVL_tree_node<Element>* AVL_tree<Element>::getMinimum() const {
         return minimum;
     }
 

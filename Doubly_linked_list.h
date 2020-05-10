@@ -44,8 +44,19 @@ namespace AVL {
     Doubly_Linked_List<T>::Doubly_Linked_List(Link_Node<T> *head):Head(head) {}
 
     template<class T>
-    Doubly_Linked_List<T>::~Doubly_Linked_List() {
+    Doubly_Linked_List<T>::~Doubly_Linked_List(){
+        Link_Node<T>* current = this->getHead();
+        Link_Node<T>* prev = NULL;
+        while(current != NULL){
+            delete(current->getElement());
+            current->setElement(NULL);
+            prev = current;
+            current = current->getNext();
+            delete (prev);
 
+        }
+        this->setHead(NULL);
+        this->setLast(NULL);
     }
 
     template<class T>
@@ -116,22 +127,26 @@ namespace AVL {
             if (node_to_remove->getNum() == getHead()->getNum() && node_to_remove->getNum() == getHead()->getNum()){
                 this->setHead(NULL);
                 this->setLast(NULL);
+                delete(node_to_remove);
                 return;
             }
             if (node_to_remove->getNum() == getHead()->getNum()){
                 setHead(node_to_remove->getNext());
                 node_to_remove->getNext()->setPrev(NULL);
+                delete(node_to_remove);
                 return;
             }
             if (node_to_remove->getNum() == getLast()->getNum()){
                 setLast(node_to_remove->getPrev());
                 node_to_remove->getPrev()->setNext(NULL);
+                delete(node_to_remove);
                 return;
             }
             Link_Node<T>* prev = node_to_remove->getPrev();
             Link_Node<T>* next = node_to_remove->getNext();
             prev->setNext(next);
             next->setPrev(prev);
+            delete(node_to_remove);
              return;
 
 

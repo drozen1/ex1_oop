@@ -32,21 +32,10 @@ public:
             arrayOfPointers[i]= pointerToList->getHead();
         }
     }
-~Artist_arrays(){
+~Artist_arrays() {
     delete[] (songNumberOfStreams);
-    AVL_tree_node<AVL_tree<int>> dummyNode =  AVL_tree_node<AVL_tree<int>>(NULL, artistID);
-    // insert check that memory didn't fail
-    for (int i = 0 ; i < numberOfSongs; i ++){
-        if(arrayOfPointers[i] != NULL){
-            arrayOfPointers[i]->getElement()->remove(dummyNode);
-            if(arrayOfPointers[i]->getElement()->getRoot() == NULL){
-                pointerToListOfStreams->removeNodeFromList(arrayOfPointers[i]);
-                arrayOfPointers[i] = NULL;
-            }
-        }
-    }
+    delete[] (arrayOfPointers);
 }
-
     Doubly_Linked_List<AVL_tree<AVL_tree<int>>> *getPointerToListOfStreams() const;
 
     int getArtistId() const;
@@ -79,9 +68,9 @@ Link_Node<AVL_tree<AVL_tree<int>>> **Artist_arrays::getArrayOfPointers() const {
 
 class MusicManager {
     private:
-    AVL_tree<Artist_arrays> mainTreeOfArtists;
     Doubly_Linked_List<AVL_tree<AVL_tree<int>>> listOfStreams;
-    public:
+    AVL_tree<Artist_arrays> mainTreeOfArtists;
+public:
 
     StatusType RemoveArtistFromDataCenter(int artistID);
     StatusType AddDataCenter(int artistID, int  numOfSongs);
@@ -91,6 +80,8 @@ class MusicManager {
     void handleCaseOfNewNodeInsertion(Doubly_Linked_List<AVL_tree<AVL_tree<int>>> *pList,
                                       Link_Node<AVL_tree<AVL_tree<int>>> *pNode,
                                       Link_Node<AVL_tree<AVL_tree<int>>> *pNode1);
+    ~MusicManager();
+
 };
 void* Init();
 StatusType RemoveArtist(void *DS, int artistID);
@@ -98,7 +89,18 @@ StatusType NumberOfStreams(void *DS, int artistID, int songID, int *streams);
 StatusType AddArtist(void *DS, int artistID, int numOfSongs);
 StatusType AddToSongCount(void *DS, int artistID, int songID);
 //StatusType GetRecommendedSongs(void *DS, int numOfSongs, int *artists, int *songs);
-//void Quit(void** DS);
+void Quit(void** DS);
+
+void Quit(void** DS){
+    if (DS == NULL){
+        return;
+    }
+    else{
+        delete ((MusicManager *)*DS);
+        *DS = NULL;
+    }
+
+}
 
 StatusType AddArtist(void *DS, int artistID, int numOfSongs) {
     if (DS == NULL || artistID <= 0 || numOfSongs<=0){
@@ -106,7 +108,6 @@ StatusType AddArtist(void *DS, int artistID, int numOfSongs) {
     }
     return ((MusicManager *)DS)-> AddDataCenter(artistID, numOfSongs);
 }
-
 StatusType AddToSongCount(void *DS, int artistID, int songID){
     if (DS == NULL || artistID <= 0 || songID<0){
         return INVALID_INPUT;
@@ -128,7 +129,7 @@ StatusType MusicManager::MMAddToSongCount(int artistID, int songID) {
     int current_num_of_streams = current_list_node->getNum(); //can also take from the int* array in artist array
     ///remove song from current song tree
     AVL_tree<int>* current_song_tree= current_list_node->getElement()->find_node(artistID)->getElement();
-    AVL_tree_node<int>* song_to_push=new AVL_tree_node<int>(songID);
+    AVL_tree_node<int>* song_to_push=new AVL_tree_node<int>(NULL,songID);
     current_song_tree->remove(*song_to_push);
     Link_Node<AVL_tree<AVL_tree<int>>>* next_list_node= current_list_node->getNext();
     Link_Node<AVL_tree<AVL_tree<int>>>* prev_list_node= current_list_node->getPrev();
@@ -158,29 +159,26 @@ StatusType MusicManager::MMAddToSongCount(int artistID, int songID) {
         else{
             handleCaseOfNewNodeInsertion(currentArtist->getElement()->getPointerToListOfStreams(), current_list_node,new_list_node);
         }
+        currentArtist->getElement()->getArrayOfPointers()[songID]=new_list_node;
     }
     else{
         ///pushing the song to the next list node
         AVL_tree_node<AVL_tree<int>>* next_artist_tree_node= next_list_node->getElement()->find_node(artistID);
-        if (next_artist_tree_node!=NULL){
+        if(next_artist_tree_node==NULL){
+            ///no artist tree of the current artist in the next node
+            AVL_tree<int>* new_song_tree= new AVL_tree<int>();
+            new_song_tree->insert(*song_to_push);
+            next_artist_tree_node= new AVL_tree_node<AVL_tree<int>>(new_song_tree,artistID);
+            next_list_node->getElement()->insert(*next_artist_tree_node);
+        }
+        else {
             ///check if the next artist tree contain our artist ID
             next_artist_tree_node->getElement()->insert(*song_to_push);
-        } else{
-            AVL_tree_node<AVL_tree<int>>* new_artist_node= new AVL_tree_node<AVL_tree<int>>(artistID);
-            new_artist_node->getElement()->insert(*song_to_push);
-            current_list_node->getElement()->insert(*new_artist_node);
         }
+        currentArtist->getElement()->getArrayOfPointers()[songID]=next_list_node;
     }
-    //if(next_list_node==NULL){
-    //    AVL_tree<int>* new_song_tree=A
-    //    Link_Node<AVL_tree<AVL_tree<int>>>* new_node_list= Link_Node<AVL_tree<AVL_tree<int>>>(current_num_of_streams+1, )
-    //}
-
-    ///adding song to the next node
-
     return SUCCESS;
 }
-
 
 StatusType MusicManager::AddDataCenter(int artistID, int numOfSongs) {
     if (mainTreeOfArtists.find_node(artistID) != NULL ){
@@ -204,14 +202,13 @@ StatusType MusicManager::AddDataCenter(int artistID, int numOfSongs) {
     return SUCCESS;
 }
 
+
 StatusType NumberOfStreams(void *DS, int artistID, int songID, int *streams) {
        if(DS == NULL ){
            return INVALID_INPUT;
        }
         return ((MusicManager *)DS) -> MMGetNumberOfStreams(artistID,songID,streams);
 }
-
-
 
 StatusType MusicManager::MMGetNumberOfStreams(int artistID, int songID, int *streams) {
     if(streams == NULL || songID < 0 || artistID <= 0 ){ ///check that streams really should give this answer
@@ -229,7 +226,6 @@ StatusType MusicManager::MMGetNumberOfStreams(int artistID, int songID, int *str
 }
 
 
-
 StatusType RemoveArtist(void *DS, int artistID) {
     if (DS == NULL || artistID <= 0 ){
         return INVALID_INPUT;
@@ -238,15 +234,44 @@ StatusType RemoveArtist(void *DS, int artistID) {
 
 }
 
+void insertNullPointers(Link_Node<AVL_tree<AVL_tree<int>>> ** arrayOfPointers , AVL_tree_node<int >* p){
+    if (p == NULL){
+        return;
+    }
+    insertNullPointers(arrayOfPointers,p->getLeftSon());
+    insertNullPointers(arrayOfPointers,p->getRightSon());
+
+}
 StatusType MusicManager::RemoveArtistFromDataCenter(int artistID) {
-    AVL_tree_node<Artist_arrays>*  currentArtist =  this->mainTreeOfArtists.find_node(artistID);
-    if(currentArtist == NULL){
+    AVL_tree_node<Artist_arrays> *currentArtist = this->mainTreeOfArtists.find_node(artistID);
+    if (currentArtist == NULL) {
         return FAILURE;
     }
-    mainTreeOfArtists.remove(*currentArtist);
+    int numberOfSongs = currentArtist->getElement()->getNumberOfSongs();
+    Link_Node<AVL_tree<AVL_tree<int>>> **arrayOfPointers = currentArtist->getElement()->getArrayOfPointers();
+    Doubly_Linked_List<AVL_tree<AVL_tree<int>>> *pointerToListOfStreams = currentArtist->getElement()->getPointerToListOfStreams();
+    AVL_tree_node<AVL_tree<int>> dummyNode = AVL_tree_node<AVL_tree<int>>(NULL, artistID);
+    for (int i = 0; i < numberOfSongs; i++) {
+        if (arrayOfPointers[i] != NULL) {
+            Link_Node<AVL_tree<AVL_tree<int>>>* ptrToCurrentNodeInList = arrayOfPointers[i];
+            AVL_tree<AVL_tree<int>>* ptrToCurrentTreeOfArtists = arrayOfPointers[i]->getElement();
 
+            insertNullPointers(currentArtist->getElement()->getArrayOfPointers(),
+                               arrayOfPointers[i]->getElement()->getRoot()->getElement()->getRoot() );
+            //ask dor ^^^^^
+            ptrToCurrentTreeOfArtists->remove(dummyNode);
+            if (ptrToCurrentTreeOfArtists->getRoot() == NULL) {
+//               arrayOfPointers[i]->setElement(NULL);
+                pointerToListOfStreams->removeNodeFromList(ptrToCurrentNodeInList);
+            }
+        }
+    }
+
+    this->mainTreeOfArtists.remove(*currentArtist);
     return SUCCESS;
 }
+
+
 
 void MusicManager::handleCaseOfNewNodeInsertion(Doubly_Linked_List<AVL_tree<AVL_tree<int>>> *pList,
                                                 Link_Node<AVL_tree<AVL_tree<int>>> *pNode,
@@ -254,12 +279,15 @@ void MusicManager::handleCaseOfNewNodeInsertion(Doubly_Linked_List<AVL_tree<AVL_
     pList->setNewNodeAfterNode(pNode,pNode1);
 }
 
+MusicManager::~MusicManager() {
+
+}
+
 
 void* Init() { ///Insert Memory checks!!!
     MusicManager* mm = new MusicManager();
     return mm;
 }
-
 
 
 

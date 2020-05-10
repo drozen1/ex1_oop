@@ -27,7 +27,7 @@ namespace AVL {
             Link_Node::num = num;
         }
 
-        void setElement(T element) {
+        void setElement(T* element) {
             Link_Node::element = element;
         }
 

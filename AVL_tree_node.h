@@ -88,6 +88,7 @@ template<class Element>
         virtual ~AVL_tree_node() {
             if(element!= NULL){
                 delete(element);
+                setElement(NULL);
             }
         }
 
