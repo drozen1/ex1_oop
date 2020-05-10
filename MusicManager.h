@@ -70,7 +70,14 @@ class MusicManager {
     private:
     Doubly_Linked_List<AVL_tree<AVL_tree<int>>> listOfStreams;
     AVL_tree<Artist_arrays> mainTreeOfArtists;
+    int totalNumberOfSongs;
 public:
+    int getTotalNumberOfSongs() const;
+
+    void setTotalNumberOfSongs(int totalNumberOfSongs);
+
+public:
+    MusicManager(): totalNumberOfSongs(0){}
 
     StatusType RemoveArtistFromDataCenter(int artistID);
     StatusType AddDataCenter(int artistID, int  numOfSongs);
@@ -205,6 +212,7 @@ StatusType MusicManager::AddDataCenter(int artistID, int numOfSongs) {
     Artist_arrays* artists_arrays = new Artist_arrays(&this->listOfStreams,artistID,numOfSongs);
     AVL_tree_node<Artist_arrays>* node_to_add_to_main_tree = new AVL_tree_node<Artist_arrays>(artists_arrays ,artistID);
     this->mainTreeOfArtists.insert(*node_to_add_to_main_tree);
+    this->setTotalNumberOfSongs(totalNumberOfSongs + numOfSongs);
     return SUCCESS;
 }
 
@@ -275,8 +283,9 @@ StatusType MusicManager::RemoveArtistFromDataCenter(int artistID) {
             }
         }
     }
-
+    int numberOfGivenArtistSongs = currentArtist->getElement()->getNumberOfSongs();
     this->mainTreeOfArtists.remove(*currentArtist);
+    this->setTotalNumberOfSongs(this->totalNumberOfSongs - numberOfGivenArtistSongs);
     return SUCCESS;
 }
 
@@ -300,9 +309,9 @@ StatusType GetRecommendedSongs(void *DS, int numOfSongs, int *artists, int *song
 }
 
 StatusType MusicManager::GetRecommendedSongs(int numOfSongs, int *artists, int *songs) {
-
-    ///check if numOfSongs> our num of total songs.. return Failure if true
-
+    if (numOfSongs > this->getTotalNumberOfSongs()){
+        return FAILURE;
+    }
     Link_Node<AVL_tree<AVL_tree<int>>>* current_list_node=this->listOfStreams.getLast();
     int current_song_number= 0;
 
@@ -314,6 +323,14 @@ StatusType MusicManager::GetRecommendedSongs(int numOfSongs, int *artists, int *
     }
 
     return SUCCESS;
+}
+
+int MusicManager::getTotalNumberOfSongs() const {
+    return totalNumberOfSongs;
+}
+
+void MusicManager::setTotalNumberOfSongs(int totalNumberOfSongs) {
+    MusicManager::totalNumberOfSongs = totalNumberOfSongs;
 }
 
 
