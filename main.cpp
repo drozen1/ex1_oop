@@ -5,6 +5,7 @@
 
 int main() {
 
+    //2
     int* artists = new int[3];
     int* songs = new int[3];
     int* test = new int();
