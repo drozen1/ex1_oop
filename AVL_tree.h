@@ -83,7 +83,9 @@ namespace AVL {
 
         void print_from_min(AVL_tree_node<Element> *cur,AVL_tree_node<Element> *last);
 
-        void print_from_min(AVL_tree_node<Element> *cur);
+//        void move_artists_from_min(AVL_tree_node<Element> *cur,AVL_tree_node<Element> *last, int* current_song_index,int numOfSongs,  int *artists, int *songs);
+//
+//        void print_songs_from_min(AVL_tree_node<Element> *cur,AVL_tree_node<Element> *last, int* current_song_index,int numOfSongs,  int *artists, int *songs, int artistID);
 
         AVL_tree_node<Element>* searchTreeRemoval(AVL_tree_node<Element> &node_to_remove, int& foundGivenNode);
 
@@ -91,7 +93,7 @@ namespace AVL {
         AVL_tree_node<Element> *root;
         AVL_tree_node<Element>* minimum;
     public:
-        AVL_tree_node<Element> *getMinimum() const;
+        AVL_tree_node<Element> *getMinimum() ;
 
     };
 
@@ -456,21 +458,6 @@ namespace AVL {
         }
 
 
-//    template<class Element>
-//    void AVL_tree<Element>::print_from_min(AVL_tree_node<Element> *cur) {
-//        if (cur!=NULL) {
-//            cur->Print_node();
-//            if(cur->getParent()!=NULL){
-//            print_from_min(cur, cur->getParent());
-//            }
-//            else{
-//                if(cur->getRightSon()!=NULL){
-//                    cur->getRightSon()->Print_node();
-//                }
-//            }
-//        }
-//    }
-
         /**
          *
          *
@@ -480,7 +467,6 @@ namespace AVL {
          */
         template<class Element>
         void AVL_tree<Element>::print_from_min(AVL_tree_node<Element> *cur,AVL_tree_node<Element> *last) {
-
             if(cur==NULL){
                 if(last->getRightSon()==NULL &&last->getParent()!=NULL){
                     print_from_min(last->getParent(),last);
@@ -495,8 +481,6 @@ namespace AVL {
                 }
 
             }
-
-
             ///finish to travel left
              if(((cur->getLeftSon()==NULL && last==NULL) ||(last!=NULL&&
              cur->getLeftSon()!=NULL&& cur->getLeftSon()->getKey()==last->getKey()))){
@@ -506,9 +490,7 @@ namespace AVL {
                  print_from_min(cur, last);
                  return;
                  }
-
              else {
-
                  if (cur->isLeaf()){
                      cur->Print_node();
                      last=cur;
@@ -522,14 +504,11 @@ namespace AVL {
                     cur->getParent()->getKey()==last->getKey()){
                  cur->Print_node();
              }
-
-
              ///travel right
             if(cur->getRightSon()!=NULL && last!=NULL && cur->getRightSon()->getKey()!=last->getKey()) {
                 print_from_min(cur->getRightSon(), cur);
                 return;
             }
-
             ///finish to travel right
             if( (cur->getRightSon()==NULL&&last==NULL)||
                 (cur->getRightSon()!=NULL&& cur->getRightSon()->getKey()==last->getKey())){
@@ -538,7 +517,7 @@ namespace AVL {
                 print_from_min(cur,last);
             }
             return;
-            }
+        }
 
 
 
@@ -774,11 +753,135 @@ template<class Element>
     }
 
     template<class Element>
-    AVL_tree_node<Element>* AVL_tree<Element>::getMinimum() const {
+    AVL_tree_node<Element>* AVL_tree<Element>::getMinimum()  {
         return minimum;
     }
 
-
+//    template<class Element>
+//    void AVL_tree<Element>::move_artists_from_min(AVL_tree_node<Element> *cur,AVL_tree_node<Element> *last,
+//            int* current_song_index,int numOfSongs,  int *artists, int *songs) {
+//        if(numOfSongs==*current_song_index){
+//            return;
+//        }
+//        if(cur==NULL){
+//            if(last->getRightSon()==NULL &&last->getParent()!=NULL){
+//                move_artists_from_min(last->getParent(),last,current_song_index,numOfSongs,artists,songs);
+//            }
+//            return;
+//        }else{
+//            ///travel left
+//            if(cur->getLeftSon()!=NULL && last!=NULL && cur->getParent()!=NULL
+//               && cur->getParent()->getKey()==last->getKey()) {
+//                move_artists_from_min(cur->getLeftSon(), cur,current_song_index,numOfSongs,artists,songs);
+//                return;
+//            }
+//        }
+//        ///finish to travel left
+//        if(((cur->getLeftSon()==NULL && last==NULL) ||(last!=NULL&&
+//                                                       cur->getLeftSon()!=NULL&& cur->getLeftSon()->getKey()==last->getKey()))){
+//            print_songs_from_min(cur,NULL,current_song_index,numOfSongs,artists,songs,cur->getKey());
+//            last = cur;
+//            cur = cur->getRightSon();
+//            move_artists_from_min(cur, last,current_song_index,numOfSongs,artists,songs);
+//            return;
+//        }
+//        else {
+//            if (cur->isLeaf()){
+//                print_songs_from_min(cur,NULL,current_song_index,numOfSongs,artists,songs,cur->getKey());
+//                last=cur;
+//                cur = cur->getParent();
+//                move_artists_from_min(cur,last,current_song_index,numOfSongs,artists,songs);
+//                return;
+//            }
+//        }
+//        if(cur->getLeftSon()==NULL&&cur->getRightSon()!=NULL&&
+//           last!=NULL&&cur->getParent()!=NULL&&
+//           cur->getParent()->getKey()==last->getKey()){
+//            print_songs_from_min(cur,NULL,current_song_index,numOfSongs,artists,songs,cur->getKey());
+//        }
+//        ///travel right
+//        if(cur->getRightSon()!=NULL && last!=NULL && cur->getRightSon()->getKey()!=last->getKey()) {
+//            move_artists_from_min(cur->getRightSon(), cur,current_song_index,numOfSongs,artists,songs);
+//            return;
+//        }
+//        ///finish to travel right
+//        if( (cur->getRightSon()==NULL&&last==NULL)||
+//            (cur->getRightSon()!=NULL&& cur->getRightSon()->getKey()==last->getKey())){
+//            last=cur;
+//            cur=cur->getParent();
+//            move_artists_from_min(cur,last,current_song_index,numOfSongs,artists,songs);
+//        }
+//
+//        return;
+//    }
+//
+//
+//    template<class Element>
+//    void AVL_tree<Element>::print_songs_from_min(AVL_tree_node<Element> *cur,AVL_tree_node<Element> *last,
+//                                        int* current_song_index,int numOfSongs,  int *artists, int *songs, int artistID) {
+//        if(numOfSongs==*current_song_index){
+//            return;
+//        }
+//        if (cur == NULL) {
+//            if (last->getRightSon() == NULL && last->getParent() != NULL) {
+//                print_songs_from_min(last->getParent(), last ,current_song_index,numOfSongs,artists,songs,artistID);
+//            }
+//            return;
+//        } else {
+//            ///travel left
+//            if (cur->getLeftSon() != NULL && last != NULL && cur->getParent() != NULL
+//                && cur->getParent()->getKey() == last->getKey()) {
+//                print_songs_from_min(cur->getLeftSon(), cur,current_song_index,numOfSongs,artists,songs,artistID);
+//                return;
+//            }
+//
+//        }
+//        ///finish to travel left
+//        if (((cur->getLeftSon() == NULL && last == NULL) || (last != NULL &&
+//                                                             cur->getLeftSon() != NULL &&
+//                                                             cur->getLeftSon()->getKey() == last->getKey()))) {
+//
+//            artists[*current_song_index]=artistID;
+//            songs[*current_song_index]=cur->getKey();
+//            *current_song_index=*current_song_index+1;
+//
+//            last = cur;
+//            cur = cur->getRightSon();
+//            print_songs_from_min(cur, last,current_song_index,numOfSongs,artists,songs,artistID);
+//            return;
+//        } else {
+//            if (cur->isLeaf()) {
+//                artists[*current_song_index]=artistID;
+//                songs[*current_song_index]=cur->getKey();
+//                *current_song_index=*current_song_index+1;
+//                last = cur;
+//                cur = cur->getParent();
+//                print_songs_from_min(cur, last,current_song_index,numOfSongs,artists,songs,artistID);
+//                return;
+//            }
+//        }
+//        if (cur->getLeftSon() == NULL && cur->getRightSon() != NULL &&
+//            last != NULL && cur->getParent() != NULL &&
+//            cur->getParent()->getKey() == last->getKey()) {
+//            artists[*current_song_index]=artistID;
+//            songs[*current_song_index]=cur->getKey();
+//            *current_song_index=*current_song_index+1;
+//        }
+//        ///travel right
+//        if (cur->getRightSon() != NULL && last != NULL && cur->getRightSon()->getKey() != last->getKey()) {
+//            print_songs_from_min(cur->getRightSon(), cur,current_song_index,numOfSongs,artists,songs,artistID);
+//            return;
+//        }
+//        ///finish to travel right
+//        if ((cur->getRightSon() == NULL && last == NULL) ||
+//            (cur->getRightSon() != NULL && cur->getRightSon()->getKey() == last->getKey())) {
+//            last = cur;
+//            cur = cur->getParent();
+//            print_songs_from_min(cur, last,current_song_index,numOfSongs,artists,songs,artistID);
+//        }
+//        return;
+//
+//    }
 
 
 }
