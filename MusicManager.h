@@ -73,6 +73,12 @@ class MusicManager {
     AVL_tree<Artist_arrays> mainTreeOfArtists;
     int totalNumberOfSongs;
 public:
+    void print_arr (int* arr1, int* arr2, int size){
+        for (int i=0;i<size;i++){
+            std::cout <<"place "<<i<<" in artist is: "<< arr1[i]<< std::endl;
+            std::cout <<"place "<<i<<" in songs is: "<<arr2[i]<< std::endl;
+        }
+    }
     int getTotalNumberOfSongs() const;
 
     void setTotalNumberOfSongs(int totalNumberOfSongs);

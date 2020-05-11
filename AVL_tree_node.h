@@ -151,6 +151,9 @@ namespace AVL {
     void AVL_tree_node<Element>::updateHeight() {
         int left_height, right_height;
         AVL_tree_node *p = this;
+        if (p==NULL){
+            return;
+        }
         if (p->getLeftSon() == NULL) {
             left_height = -1;
         } else {

@@ -124,7 +124,7 @@ namespace AVL {
             if (node_to_remove->getElement()!= NULL) {
                 delete (node_to_remove->getElement());
             }
-            if (node_to_remove->getNum() == getHead()->getNum() && node_to_remove->getNum() == getHead()->getNum()){
+            if (node_to_remove->getNum() == getHead()->getNum() && node_to_remove->getNum() == getLast()->getNum()){
                 this->setHead(NULL);
                 this->setLast(NULL);
                 delete(node_to_remove);
