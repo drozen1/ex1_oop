@@ -13,7 +13,7 @@
 namespace AVL {
 
     using namespace AVLUtils;
-template<class Element>
+    template<class Element>
     class AVL_tree_node {
     private:
         Element* element;

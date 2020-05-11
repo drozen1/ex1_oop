@@ -181,12 +181,6 @@ namespace AVL {
 
     template<class Element>
     StatusType AVL_tree<Element>::remove(AVL_tree_node<Element> &node_to_remove) {
-        if (this->getMinimum() == NULL){
-            return FAILURE;
-        }
-        if(node_to_remove.getKey()== minimum->getKey()){
-            minimum = node_to_remove.getParent();
-        }
         int nodeWasFound = 0;
         AVL_tree_node<Element>* parentOfVBeforeRoll = NULL;
         AVL_tree_node<Element>* nodeToStartFrom = searchTreeRemoval(node_to_remove,nodeWasFound);
@@ -201,7 +195,14 @@ namespace AVL {
             PerformRoll(v, roll_needed);
                 v= parentOfVBeforeRoll;
                 }
-        return SUCCESS; //temporary return value
+        AVL_tree_node<Element> *new_minimum = this->getRoot();
+        if (this->getRoot()!=NULL) {
+            while (new_minimum->getLeftSon() != NULL) {
+                new_minimum = new_minimum->getLeftSon();
+            }
+            this->setMinimum(new_minimum);
+        }
+        return SUCCESS;
         }
 
 

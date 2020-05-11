@@ -1,6 +1,7 @@
 #ifndef EX1_DATASTRUCK_MUSICMANAGER_H
 #define EX1_DATASTRUCK_MUSICMANAGER_H
 
+
 #include "AVL_tree.h"
 #include "AVL_tree_node.h"
 #include "Doubly_linked_list.h"
@@ -91,12 +92,12 @@ public:
     ~MusicManager();
 
 };
-void* Init();
-StatusType RemoveArtist(void *DS, int artistID);
-StatusType NumberOfStreams(void *DS, int artistID, int songID, int *streams);
-StatusType AddArtist(void *DS, int artistID, int numOfSongs);
-StatusType AddToSongCount(void *DS, int artistID, int songID);
-StatusType GetRecommendedSongs(void *DS, int numOfSongs, int *artists, int *songs);
+//void* Init();
+//StatusType RemoveArtist(void *DS, int artistID);
+//StatusType NumberOfStreams(void *DS, int artistID, int songID, int *streams);
+//StatusType AddArtist(void *DS, int artistID, int numOfSongs);
+//StatusType AddToSongCount(void *DS, int artistID, int songID);
+//StatusType GetRecommendedSongs(void *DS, int numOfSongs, int *artists, int *songs);
 void move_artists_from_min(AVL_tree_node<AVL_tree<int>> *cur,AVL_tree_node<AVL_tree<int>> *last, int* current_song_index,int numOfSongs,  int *artists, int *songs);
 
 void print_songs_from_min(AVL_tree_node<int> *cur,AVL_tree_node<int> *last, int* current_song_index,int numOfSongs,  int *artists, int *songs, int artistID);
@@ -244,7 +245,9 @@ StatusType RemoveArtist(void *DS, int artistID) {
     if (DS == NULL || artistID <= 0 ){
         return INVALID_INPUT;
     }
+
     return  ((MusicManager *)DS) -> RemoveArtistFromDataCenter(artistID);
+
 
 }
 
@@ -336,32 +339,35 @@ void MusicManager::setTotalNumberOfSongs(int totalNumberOfSongs) {
 
 void* Init() { ///Insert Memory checks!!!
     MusicManager* mm = new MusicManager();
-    return mm;
+    //return mm;
+    return (void*)mm;
 }
 
 
 
 void move_artists_from_min(AVL_tree_node<AVL_tree<int>> *cur,AVL_tree_node<AVL_tree<int>> *last,
-                                              int* current_song_index,int numOfSongs,  int *artists, int *songs) {
+                           int* current_song_index,int numOfSongs,  int *artists, int *songs) {
     if(numOfSongs==*current_song_index){
         return;
     }
-    if(cur==NULL){
-        if(last->getRightSon()==NULL &&last->getParent()!=NULL){
-            move_artists_from_min(last->getParent(),last,current_song_index,numOfSongs,artists,songs);
-        }
-        return;
-    }else{
-        ///travel left
-        if(cur->getLeftSon()!=NULL && last!=NULL && cur->getParent()!=NULL
-           && cur->getParent()->getKey()==last->getKey()) {
-            move_artists_from_min(cur->getLeftSon(), cur,current_song_index,numOfSongs,artists,songs);
+
+        if (cur == NULL && last != NULL) {
+            if (last->getRightSon() == NULL && last->getParent() != NULL) {
+                move_artists_from_min(last->getParent(), last, current_song_index, numOfSongs, artists, songs);
+            }
             return;
+        } else {
+            ///travel left
+            if (last != NULL && cur->getLeftSon() != NULL && cur->getParent() != NULL
+                && cur->getParent()->getKey() == last->getKey()) {
+                move_artists_from_min(cur->getLeftSon(), cur, current_song_index, numOfSongs, artists, songs);
+                return;
+            }
         }
-    }
+
     ///finish to travel left
-    if(((cur->getLeftSon()==NULL && last==NULL) ||(last!=NULL&&
-                                                   cur->getLeftSon()!=NULL&& cur->getLeftSon()->getKey()==last->getKey()))){
+    if(cur!=NULL&&((cur->getLeftSon()==NULL && last==NULL) ||(last!=NULL&&
+                                                              cur->getLeftSon()!=NULL&& cur->getLeftSon()->getKey()==last->getKey()))){
         print_songs_from_min(cur->getElement()->getMinimum(),NULL,current_song_index,numOfSongs,artists,songs,cur->getKey());
         last = cur;
         cur = cur->getRightSon();
@@ -369,7 +375,7 @@ void move_artists_from_min(AVL_tree_node<AVL_tree<int>> *cur,AVL_tree_node<AVL_t
         return;
     }
     else {
-        if (cur->isLeaf()){
+        if (cur!=NULL&& cur->isLeaf()){
             print_songs_from_min(cur->getElement()->getMinimum(),NULL,current_song_index,numOfSongs,artists,songs,cur->getKey());
             last=cur;
             cur = cur->getParent();
@@ -377,19 +383,19 @@ void move_artists_from_min(AVL_tree_node<AVL_tree<int>> *cur,AVL_tree_node<AVL_t
             return;
         }
     }
-    if(cur->getLeftSon()==NULL&&cur->getRightSon()!=NULL&&
-       last!=NULL&&cur->getParent()!=NULL&&
-       cur->getParent()->getKey()==last->getKey()){
+    if(cur!=NULL&&(cur->getLeftSon()==NULL&&cur->getRightSon()!=NULL&&
+                   last!=NULL&&cur->getParent()!=NULL&&
+                   cur->getParent()->getKey()==last->getKey())){
         print_songs_from_min(cur->getElement()->getMinimum(),NULL,current_song_index,numOfSongs,artists,songs,cur->getKey());
     }
     ///travel right
-    if(cur->getRightSon()!=NULL && last!=NULL && cur->getRightSon()->getKey()!=last->getKey()) {
+    if(cur!=NULL&&(cur->getRightSon()!=NULL && last!=NULL && cur->getRightSon()->getKey()!=last->getKey())) {
         move_artists_from_min(cur->getRightSon(), cur,current_song_index,numOfSongs,artists,songs);
         return;
     }
     ///finish to travel right
-    if( (cur->getRightSon()==NULL&&last==NULL)||
-        (cur->getRightSon()!=NULL&& cur->getRightSon()->getKey()==last->getKey())){
+    if( cur!=NULL&&((cur->getRightSon()==NULL&&last==NULL)||
+                    (cur->getRightSon()!=NULL&& cur->getRightSon()->getKey()==last->getKey()))){
         last=cur;
         cur=cur->getParent();
         move_artists_from_min(cur,last,current_song_index,numOfSongs,artists,songs);
@@ -398,15 +404,15 @@ void move_artists_from_min(AVL_tree_node<AVL_tree<int>> *cur,AVL_tree_node<AVL_t
     return;
 }
 
-
+////////////////////////////////if cur get Null it can be problem....
 
 void print_songs_from_min(AVL_tree_node<int> *cur,AVL_tree_node<int> *last,
-                                             int* current_song_index,int numOfSongs,  int *artists, int *songs, int artistID) {
+                          int* current_song_index,int numOfSongs,  int *artists, int *songs, int artistID) {
     if(numOfSongs==*current_song_index){
         return;
     }
     if (cur == NULL) {
-        if (last->getRightSon() == NULL && last->getParent() != NULL) {
+        if (last!=NULL && last->getRightSon() == NULL && last->getParent() != NULL) {
             print_songs_from_min(last->getParent(), last ,current_song_index,numOfSongs,artists,songs,artistID);
         }
         return;
@@ -420,9 +426,9 @@ void print_songs_from_min(AVL_tree_node<int> *cur,AVL_tree_node<int> *last,
 
     }
     ///finish to travel left
-    if (((cur->getLeftSon() == NULL && last == NULL) || (last != NULL &&
-                                                         cur->getLeftSon() != NULL &&
-                                                         cur->getLeftSon()->getKey() == last->getKey()))) {
+    if (cur!=NULL&&((cur->getLeftSon() == NULL && last == NULL) || (last != NULL &&
+                                                                    cur->getLeftSon() != NULL &&
+                                                                    cur->getLeftSon()->getKey() == last->getKey()))) {
 
         artists[*current_song_index]=artistID;
         songs[*current_song_index]=cur->getKey();
@@ -433,7 +439,7 @@ void print_songs_from_min(AVL_tree_node<int> *cur,AVL_tree_node<int> *last,
         print_songs_from_min(cur, last,current_song_index,numOfSongs,artists,songs,artistID);
         return;
     } else {
-        if (cur->isLeaf()) {
+        if (cur!=NULL&&cur->isLeaf()) {
             artists[*current_song_index]=artistID;
             songs[*current_song_index]=cur->getKey();
             *current_song_index=*current_song_index+1;
@@ -443,21 +449,21 @@ void print_songs_from_min(AVL_tree_node<int> *cur,AVL_tree_node<int> *last,
             return;
         }
     }
-    if (cur->getLeftSon() == NULL && cur->getRightSon() != NULL &&
-        last != NULL && cur->getParent() != NULL &&
-        cur->getParent()->getKey() == last->getKey()) {
+    if (cur!=NULL&&(cur->getLeftSon() == NULL && cur->getRightSon() != NULL &&
+                    last != NULL && cur->getParent() != NULL &&
+                    cur->getParent()->getKey() == last->getKey())) {
         artists[*current_song_index]=artistID;
         songs[*current_song_index]=cur->getKey();
         *current_song_index=*current_song_index+1;
     }
     ///travel right
-    if (cur->getRightSon() != NULL && last != NULL && cur->getRightSon()->getKey() != last->getKey()) {
+    if (cur!=NULL&&(cur->getRightSon() != NULL && last != NULL && cur->getRightSon()->getKey() != last->getKey())) {
         print_songs_from_min(cur->getRightSon(), cur,current_song_index,numOfSongs,artists,songs,artistID);
         return;
     }
     ///finish to travel right
-    if ((cur->getRightSon() == NULL && last == NULL) ||
-        (cur->getRightSon() != NULL && cur->getRightSon()->getKey() == last->getKey())) {
+    if (cur!=NULL&&((cur->getRightSon() == NULL && last == NULL) ||
+                    (cur->getRightSon() != NULL && cur->getRightSon()->getKey() == last->getKey()))) {
         last = cur;
         cur = cur->getParent();
         print_songs_from_min(cur, last,current_song_index,numOfSongs,artists,songs,artistID);
