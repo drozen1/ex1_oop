@@ -86,14 +86,13 @@ namespace AVL {
      * @param newNode- the address of the new node..
      */
     template<class T>
-    void Doubly_Linked_List<T>::setNewNodeAfterNode(Link_Node<T> *push_after_node,Link_Node<T>* newNode) {
+    void Doubly_Linked_List<T>::setNewNodeAfterNode(Link_Node<T> *push_after_node,Link_Node<T>* newNode) { /////////////DEBUG NEEDED!!!!!
         ///treat head is newNode
         if (push_after_node==NULL){
             if(this->getHead()!=NULL) {
                 newNode->setNext(this->getHead());
-                if(this->getHead()->getNext()!=NULL) {
-                    this->getHead()->getNext()->setPrev(newNode);
-                }
+                this->getHead()->setPrev(newNode);
+                //this->getHead()->getNext()->setPrev(newNode);
             }
             else{
                 setLast(newNode);
@@ -138,14 +137,20 @@ namespace AVL {
             }
             if (node_to_remove->getNum() == getLast()->getNum()){
                 setLast(node_to_remove->getPrev());
-                node_to_remove->getPrev()->setNext(NULL);
+                if (node_to_remove->getPrev()!=NULL) {
+                    node_to_remove->getPrev()->setNext(NULL);
+                }
                 delete(node_to_remove);
                 return;
             }
             Link_Node<T>* prev = node_to_remove->getPrev();
             Link_Node<T>* next = node_to_remove->getNext();
-            prev->setNext(next);
-            next->setPrev(prev);
+            if (prev!=NULL) {
+                prev->setNext(next);
+            }
+            if (next!=NULL) {
+                next->setPrev(prev);
+            }
             delete(node_to_remove);
              return;
 

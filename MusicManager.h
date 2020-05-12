@@ -311,8 +311,11 @@ MusicManager::~MusicManager() {
 }
 
 StatusType GetRecommendedSongs(void *DS, int numOfSongs, int *artists, int *songs){
-    if(DS == NULL || numOfSongs<=0){
+    if(DS == NULL ){
         return INVALID_INPUT;
+    }
+    if (numOfSongs<=0){
+        return  ALLOCATION_ERROR;
     }
     return ((MusicManager *)DS) -> GetRecommendedSongs(numOfSongs,artists,songs);
 }
