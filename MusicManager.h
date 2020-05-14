@@ -98,12 +98,7 @@ public:
     ~MusicManager();
 
 };
-//void* Init();
-//StatusType RemoveArtist(void *DS, int artistID);
-//StatusType NumberOfStreams(void *DS, int artistID, int songID, int *streams);
-//StatusType AddArtist(void *DS, int artistID, int numOfSongs);
-//StatusType AddToSongCount(void *DS, int artistID, int songID);
-//StatusType GetRecommendedSongs(void *DS, int numOfSongs, int *artists, int *songs);
+
 void move_artists_from_min(AVL_tree_node<AVL_tree<int>> *cur,AVL_tree_node<AVL_tree<int>> *last, int* current_song_index,int numOfSongs,  int *artists, int *songs);
 
 void print_songs_from_min(AVL_tree_node<int> *cur,AVL_tree_node<int> *last, int* current_song_index,int numOfSongs,  int *artists, int *songs, int artistID);
@@ -126,13 +121,24 @@ StatusType AddArtist(void *DS, int artistID, int numOfSongs) {
     if (DS == NULL || artistID <= 0 || numOfSongs<=0){
         return INVALID_INPUT;
     }
-    return ((MusicManager *)DS)-> AddDataCenter(artistID, numOfSongs);
+    try {
+        return ((MusicManager *) DS)->AddDataCenter(artistID, numOfSongs);
+    }
+    catch (std::bad_alloc& ba){
+        return ALLOCATION_ERROR;
+    }
 }
+
 StatusType AddToSongCount(void *DS, int artistID, int songID){
     if (DS == NULL || artistID <= 0 || songID<0){
         return INVALID_INPUT;
     }
-    return ((MusicManager *)DS)-> MMAddToSongCount(artistID, songID);
+    try {
+        return ((MusicManager *) DS)->MMAddToSongCount(artistID, songID);
+    }
+    catch (std::bad_alloc& ba){
+        return ALLOCATION_ERROR;
+    }
 }
 
 StatusType MusicManager::MMAddToSongCount(int artistID, int songID) {
@@ -228,7 +234,12 @@ StatusType NumberOfStreams(void *DS, int artistID, int songID, int *streams) {
        if(DS == NULL ){
            return INVALID_INPUT;
        }
-        return ((MusicManager *)DS) -> MMGetNumberOfStreams(artistID,songID,streams);
+       try {
+           return ((MusicManager *) DS)->MMGetNumberOfStreams(artistID, songID, streams);
+       }
+       catch (std::bad_alloc& ba){
+           return ALLOCATION_ERROR;
+       }
 }
 
 StatusType MusicManager::MMGetNumberOfStreams(int artistID, int songID, int *streams) {
@@ -251,9 +262,12 @@ StatusType RemoveArtist(void *DS, int artistID) {
     if (DS == NULL || artistID <= 0 ){
         return INVALID_INPUT;
     }
-
-    return  ((MusicManager *)DS) -> RemoveArtistFromDataCenter(artistID);
-
+    try {
+        return ((MusicManager *) DS)->RemoveArtistFromDataCenter(artistID);
+    }
+    catch (std::bad_alloc& ba){
+        return ALLOCATION_ERROR;
+    }
 
 }
 
@@ -317,7 +331,12 @@ StatusType GetRecommendedSongs(void *DS, int numOfSongs, int *artists, int *song
     if (numOfSongs<=0){
         return  ALLOCATION_ERROR;
     }
-    return ((MusicManager *)DS) -> GetRecommendedSongs(numOfSongs,artists,songs);
+    try {
+        return ((MusicManager *) DS)->GetRecommendedSongs(numOfSongs, artists, songs);
+    }
+    catch (std::bad_alloc& ba){
+        return ALLOCATION_ERROR;
+    }
 }
 
 StatusType MusicManager::GetRecommendedSongs(int numOfSongs, int *artists, int *songs) {
