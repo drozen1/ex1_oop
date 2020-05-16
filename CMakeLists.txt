@@ -3,5 +3,5 @@ project(ex1_datastruck)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(ex1_datastruck main1.cpp)
+add_executable(ex1_datastruck main1.cpp library1.cpp)
 

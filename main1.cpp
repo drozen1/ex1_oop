@@ -18,7 +18,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "library1.h"
-#include "MusicManager.h"
 
 #ifdef __cplusplus
 extern "C" {
